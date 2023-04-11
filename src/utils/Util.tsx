@@ -3,8 +3,6 @@ import { ILogin } from '../models/ILogin';
 import { useNavigate } from 'react-router-dom';
 
 const key = process.env.REACT_APP_KEY ? process.env.REACT_APP_KEY : 'CoreAppKey'
-// eslint-disable-next-line react-hooks/rules-of-hooks
-const navigate = useNavigate();
 
 export const encrypt = (plainText: string) => {
     const ciphertext = CryptoJS.AES.encrypt(plainText, key).toString();
