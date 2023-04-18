@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Breadcrumb } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
 
 const { Content } = Layout;
 
 const HomePage = () => {
+  const loginState = useSelector((state: RootState) => state.login);
+  const navigate = useNavigate();
+  
+  React.useEffect(() => {
+    if (!loginState.data) {
+      navigate("/login");
+    }
+  }, [loginState, navigate]);
+
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Content style={{ margin: "0 16px" }}>
