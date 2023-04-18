@@ -18,6 +18,7 @@ const HeaderComponent: React.FC = () => {
     dispatch(clearLoginData());
     localStorage.removeItem('data');
     sessionStorage.removeItem('data');
+    loginState.data=null
     navigate('/login');
   };
 

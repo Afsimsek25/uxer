@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Checkbox, Row, Col, Typography, Space ,Alert} from 'antd';
+import { Form, Input, Button, Checkbox, Row, Col, Typography, Space ,Alert, notification} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link,useNavigate} from 'react-router-dom';
 import { userLogin } from '../../utils/servise';
 import { encrypt } from '../../utils/Util';
 import { useDispatch } from 'react-redux';
-import { LOGIN_REQUEST } from '../../redux/actions/loginActions';
+import { LOGIN_REQUEST, loginRequest } from '../../redux/actions/loginActions';
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store"; // store.ts dosyasını içe aktarın
 
@@ -29,17 +29,18 @@ const LoginPage: React.FC = () => {
   const loginState = useSelector((state: RootState) => state.login);
 
   const onFinish = (values: LoginFormData) => {
-    dispatch(LOGIN_REQUEST(values.username, values.password));
+    dispatch(loginRequest(values.username, values.password));
   };
-  
-  // Başarılı login işlemi sonrası yönlendirme ve bildirim işlemleri
+
   React.useEffect(() => {
     if (loginState.data) {
       navigate("/homepage");
     }
+    if (loginState.error) {
+      setLoginError(true);
+    }
   }, [loginState, navigate]);
-
-
+  
   return (
     <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <Col xs={24} sm={12} md={8} lg={6}>
