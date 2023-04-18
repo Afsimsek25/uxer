@@ -12,7 +12,10 @@ import {
 } from "antd";
 import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import { userRegister } from "../../utils/servise";
+import { useDispatch, useSelector } from "react-redux";
+import { registerRequest } from "../../redux/actions/registerActions";
+import { RootState } from "../../redux/store"; // store.ts dosyasını içe aktarın
+
 
 const { Title } = Typography;
 
@@ -24,48 +27,26 @@ interface RegisterFormData {
   password: string;
   passwordConfirm: string;
 }
-
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const dispatch = useDispatch();
+  const registerState = useSelector((state: RootState) => state.register);
+  const loading = registerState.isLoading;
   const [registerError, setRegisterError] = useState(false);
 
-  const onFinish = (values: RegisterFormData) => {
-    setLoading(true);
-    setUsername(values.userName);
-    setPassword(values.password);
-    setEmail(values.email);
 
-    userRegister(
-      values.firstName,
-      values.lastName,
-      values.userName,
-      values.email,
-      values.password,
-      values.passwordConfirm
-    )
-      .then((response) => {
-        if (response.status === 200) {
-          notification.success({
-            message: "Kayıt Başarılı",
-            description:
-              "Kayıt işlemi başarıyla tamamlandı, giriş yapabilirsiniz.",
-          });
-          navigate("/login");
-        } else {
-          setRegisterError(true);
-        }
-      })
-      .catch((error) => {
-        console.log("Error occurred while registering", error);
-        setRegisterError(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  
+  const onFinish = (values: RegisterFormData) => {
+    dispatch(
+      registerRequest(
+        values.firstName,
+        values.lastName,
+        values.userName,
+        values.email,
+        values.password,
+        values.passwordConfirm
+      )
+    );
   };
 
   const formRules = [
@@ -75,6 +56,20 @@ const Register: React.FC = () => {
     },
   ];
 
+  // Register işlemi başarılı olduğunda yönlendirme ve bildirim işlemleri
+  React.useEffect(() => {
+    if (registerState.data) {
+      notification.success({
+        message: "Kayıt Başarılı",
+        description:
+          "Kayıt işlemi başarıyla tamamlandı, giriş yapabilirsiniz.",
+      });
+      navigate("/login");
+    }
+    if (registerState.error) {
+      setRegisterError(true);
+    }
+  }, [registerState, navigate]);
   return (
     <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
       <Col xs={24} sm={12} md={8} lg={6}>

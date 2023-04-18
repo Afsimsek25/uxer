@@ -4,6 +4,11 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link,useNavigate} from 'react-router-dom';
 import { userLogin } from '../../utils/servise';
 import { encrypt } from '../../utils/Util';
+import { useDispatch } from 'react-redux';
+import { LOGIN_REQUEST } from '../../redux/actions/loginActions';
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store"; // store.ts dosyasını içe aktarın
+
 
 
 const { Title } = Typography;
@@ -19,28 +24,20 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
 
+
+  const dispatch = useDispatch();
+  const loginState = useSelector((state: RootState) => state.login);
+
   const onFinish = (values: LoginFormData) => {
-    setLoading(true);
-    console.log('Received values of form: ', values);
-    userLogin(values.username, values.password)
-    .then((response) => {
-      if (response.data.accessToken) {
-        const data = response.data;
-        const encryptedData = encrypt(JSON.stringify(data));
-        sessionStorage.setItem("data", encryptedData);
-        navigate("/homepage");
-      } else {
-        setLoginError(true);
-      }
-    })
-    .catch((error) => {
-      console.log("Error occurred while login", error);
-      setLoginError(true);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+    dispatch(LOGIN_REQUEST(values.username, values.password));
   };
+  
+  // Başarılı login işlemi sonrası yönlendirme ve bildirim işlemleri
+  React.useEffect(() => {
+    if (loginState.data) {
+      navigate("/homepage");
+    }
+  }, [loginState, navigate]);
 
 
   return (
