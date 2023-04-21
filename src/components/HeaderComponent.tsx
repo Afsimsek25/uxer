@@ -7,6 +7,8 @@ import {
   DownOutlined,
   CaretDownOutlined,
   ImportOutlined,
+  LogoutOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
@@ -19,6 +21,8 @@ const HeaderComponent: React.FC = () => {
   const loginState = useSelector((state: RootState) => state.login);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  
 
   const logout = () => {
     dispatch(clearLoginData());
@@ -34,8 +38,11 @@ const HeaderComponent: React.FC = () => {
 
   const userMenu = (
     <Menu>
-      <Menu.Item key="logout" onClick={logout}>
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logout}>
         Logout
+      </Menu.Item>
+      <Menu.Item key="logout" icon={<SettingOutlined />} >
+        Settings
       </Menu.Item>
     </Menu>
   );

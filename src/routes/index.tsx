@@ -7,8 +7,6 @@ import Register from '../containers/Register/Register';
 import ForgotPassword from '../containers/ForgotPassword/ForgotPassword';
 import HeaderComponent from '../components/HeaderComponent'
 import React, { useState, useEffect } from 'react';
-import HomePage from '../containers/HomePage/HomePage';
-;
 
 const Routes: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -25,7 +23,7 @@ const Routes: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/homepage" element={<HomePage />} />
+        
         {/* Diğer rotaları buraya ekleyebilirsiniz. */}
       </RouterSwitch>
     </BrowserRouter>

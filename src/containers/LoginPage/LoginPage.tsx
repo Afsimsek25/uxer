@@ -24,17 +24,17 @@ const LoginPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
 
-
   const dispatch = useDispatch();
   const loginState = useSelector((state: RootState) => state.login);
 
   const onFinish = (values: LoginFormData) => {
     dispatch(loginRequest(values.username, values.password));
+    
   };
 
   React.useEffect(() => {
     if (loginState.data) {
-      navigate("/homepage");
+      navigate("/homepage"); 
     }
     if (loginState.error) {
       setLoginError(true);
