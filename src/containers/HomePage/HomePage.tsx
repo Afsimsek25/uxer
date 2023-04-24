@@ -8,6 +8,7 @@ const { Content } = Layout;
 
 const HomePage = () => {
   const loginState = useSelector((state: RootState) => state.login);
+  console.log('aaaaa',loginState.data)
   const navigate = useNavigate();
   
   React.useEffect(() => {
