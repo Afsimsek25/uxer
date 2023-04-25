@@ -1,9 +1,8 @@
 import axios from "axios";
 import { control } from './Util';
-import { ILogin } from "../models/ILogin";
 
 
-const baseURL = 'https://gateway-test.u-xer.com/api/'
+const baseURL = 'http://gateway-test.u-xer.com/api/'
 
 const config = axios.create({
     baseURL: baseURL

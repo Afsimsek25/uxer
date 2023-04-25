@@ -16,6 +16,12 @@ const RoutePath = () => {
           </Authentication>
         }
       />
+      <Route
+      path="/"
+      element={
+          <HomePage />
+      }
+    />
     </Routes>
   );
 };

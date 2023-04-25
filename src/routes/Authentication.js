@@ -4,7 +4,8 @@ import { Navigate, useLocation } from "react-router-dom";
 const Authentication = ({ children }) => {
     const { user } = useAuth();
     const location = useLocation();
-    if (!user.username) {
+    console.log("authen", user)
+    if (!user.token.accessToken) {
         return <Navigate to="/login" state={{ path: location.pathname }} />;
     }
     return children;

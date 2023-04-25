@@ -5,10 +5,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.path || "/profile";
-  let [user, setUser] = useState({
-    username: "",
-    permissions: [],
-  });
+  let [user, setUser] = useState({ token: null, permissions: [] });
   const usr = JSON.parse(localStorage.getItem('token'));
   if (usr) {
       user = usr;
@@ -28,14 +25,14 @@ export const AuthProvider = ({ children }) => {
       setUser({ token: token, permissions: ["view_extra"] });
       localStorage.setItem('token', JSON.stringify({ token: token, permissions: ["view_extra"] }));
     } else {
-      setUser({ username: user, permissions: ["view_about"] });
-      localStorage.setItem('user', JSON.stringify({ username: user, permissions: ["view_about"] }));
+      setUser({ token: user, permissions: ["view_about"] });
+      localStorage.setItem('token', JSON.stringify({ token: user, permissions: ["view_about"] }));
     }
     navigate(redirectPath, { replace: true });
   }
   const logout = () => {
-    setUser({ username: "", permissions: [] });
-    localStorage.setItem('user', JSON.stringify({ username: "", permissions: [] }));
+    setUser({ token: "", permissions: [] });
+    localStorage.setItem('token', JSON.stringify({ token: null, permissions: [] }));
   };
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout }}>

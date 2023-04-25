@@ -5,7 +5,7 @@ import { useAuth } from "../provider/AuthProvider";
 const Authorization = ({ permissions }) => {
   const { user } = useAuth();
   const location = useLocation();
-  if (user.username) {
+  if (user.token.accessToken) {
     const userpermission = user.permissions;
     const isAllowed = permissions.some((allowed) =>
       userpermission.includes(allowed)
