@@ -8,8 +8,9 @@ import { userLogin } from '../../utils/servise';
 function* login(action) {
   try {
     const response = yield* call(userLogin, action.payload.username, action.payload.password);
-    console.log('response: ',response);
-    yield put({type:LOGIN_SUCCESS,payload:response});
+    console.log('response1: ',response);
+    
+    yield put({type:LOGIN_SUCCESS,payload:response.data});
     
   } catch (error) {
     yield put(loginFailure('Kullanıcı adı veya şifre hatalı'));
