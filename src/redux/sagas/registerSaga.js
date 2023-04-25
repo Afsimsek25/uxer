@@ -7,7 +7,7 @@ import {
 } from "../actions/registerActions";
 import { userRegister } from "../../utils/servise";
 
-function* register(action: any): Generator {
+function* register(action){
   try {
     const response = yield* call(
       userRegister,

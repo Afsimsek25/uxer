@@ -3,18 +3,18 @@ import { ILogin } from '../models/ILogin';
 
 const key = process.env.REACT_APP_KEY ? process.env.REACT_APP_KEY : 'CoreAppKey'
 
-export const encrypt = (plainText: string) => {
+export const encrypt = (plainText) => {
     const ciphertext = CryptoJS.AES.encrypt(plainText, key).toString();
     return ciphertext
 }
 
-export const decrypt = (ciphertext: string) => {
+export const decrypt = (ciphertext) => {
     const bytes = CryptoJS.AES.decrypt(ciphertext, key);
     const plaintext = bytes.toString(CryptoJS.enc.Utf8)
     return plaintext
 }
 
-export const control = (): ILogin | null => {
+export const control = () => {
     //Remember control
     const stremember = localStorage.getItem('data')
     console.log(stremember)
@@ -28,7 +28,7 @@ export const control = (): ILogin | null => {
     if (stEncData) {
         try {
             const stData = decrypt(stEncData)
-            const securityControl = JSON.parse(stData) as ILogin
+            const securityControl = JSON.parse()
             return securityControl
         } catch (error) {
             sessionStorage.removeItem('data')

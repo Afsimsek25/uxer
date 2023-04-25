@@ -11,14 +11,13 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { clearLoginData } from "../redux/actions/loginActions";
 
 const { Header } = Layout;
 
-const HeaderComponent: React.FC = () => {
-  const loginState = useSelector((state: RootState) => state.login);
+const HeaderComponent= () => {
+  const loginState = useSelector((state) => state.login);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,10 +30,6 @@ const HeaderComponent: React.FC = () => {
     loginState.data = null;
     navigate("/login");
   };
-
-  if (!loginState.data) {
-    return null;
-  }
 
   const userMenu = (
     <Menu>

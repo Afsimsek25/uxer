@@ -6,14 +6,10 @@ import { Link } from 'react-router-dom';
 
 const { Title } = Typography;
 
-interface ForgotPasswordFormData {
-  email: string;
-}
-
-const ForgotPassword: React.FC = () => {
+const ForgotPassword= () => {
   const [loading, setLoading] = useState(false);
 
-  const onFinish = (values: ForgotPasswordFormData) => {
+  const onFinish = (values) => {
     setLoading(true);
     console.log('Received values of form: ', values);
     // Burada API çağrısı yaparak şifre sıfırlama e-postası gönderebilirsiniz.

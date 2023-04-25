@@ -1,39 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Form, Input, Button, Checkbox, Row, Col, Typography, Space ,Alert, notification} from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link,useNavigate} from 'react-router-dom';
-import { userLogin } from '../../utils/servise';
-import { encrypt } from '../../utils/Util';
 import { useDispatch } from 'react-redux';
 import { LOGIN_REQUEST, loginRequest } from '../../redux/actions/loginActions';
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store"; // store.ts dosyasını içe aktarın
+import { useAuth } from '../../provider/AuthProvider';
 
 
 
 const { Title } = Typography;
 
-interface LoginFormData {
-  username: string;
-  password: string;
-  remember: boolean;
-}
-
-const LoginPage: React.FC = () => {
+const LoginPage=() => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
+  const { login } = useAuth();
 
   const dispatch = useDispatch();
-  const loginState = useSelector((state: RootState) => state.login);
+  const loginState = useSelector((state) => state.login);
 
-  const onFinish = (values: LoginFormData) => {
+  const onFinish = (values) => {
     dispatch(loginRequest(values.username, values.password));
-    
   };
 
-  React.useEffect(() => {
+
+
+  useEffect(() => {
     if (loginState.data) {
+      login(loginState.data)
       navigate("/homepage"); 
     }
     if (loginState.error) {

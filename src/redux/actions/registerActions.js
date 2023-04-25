@@ -3,23 +3,23 @@
   export const REGISTER_FAILURE = "REGISTER_FAILURE";
 
   export const registerRequest = (
-    firstName: string,
-    lastName: string,
-    userName: string,
-    email: string,
-    password: string,
-    passwordConfirm: string
+    firstName,
+    lastName,
+    userName,
+    email,
+    password,
+    passwordConfirm
   ) => ({
     type: REGISTER_REQUEST,
     payload: { firstName, lastName, userName, email, password, passwordConfirm },
   });
 
-  export const registerSuccess = (data: any) => ({
+  export const registerSuccess = (data) => ({
     type: REGISTER_SUCCESS,
     payload: data,
   });
 
-  export const registerFailure = (error: string) => ({
+  export const registerFailure = (error) => ({
     type: REGISTER_FAILURE,
     payload: error,
   });

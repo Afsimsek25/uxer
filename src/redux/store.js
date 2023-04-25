@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   register: registerReducer,
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
+
 
 // Saga Middleware
 const sagaMiddleware = createSagaMiddleware();

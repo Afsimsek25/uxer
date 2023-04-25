@@ -6,7 +6,7 @@ import { FolderOpenOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
 
-const RightSidebar: React.FC = () => {
+const RightSidebar = () => {
   return (
     <Sider width={80} theme="dark">
       <Menu mode="vertical" theme="dark" selectable={false}>

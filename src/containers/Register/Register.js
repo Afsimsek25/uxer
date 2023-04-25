@@ -14,29 +14,17 @@ import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerRequest } from "../../redux/actions/registerActions";
-import { RootState } from "../../redux/store"; // store.ts dosyasını içe aktarın
 
 
 const { Title } = Typography;
-
-interface RegisterFormData {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  password: string;
-  passwordConfirm: string;
-}
-const Register: React.FC = () => {
+const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const registerState = useSelector((state: RootState) => state.register);
+  const registerState = useSelector((state) => state.register);
   const loading = registerState.isLoading;
   const [registerError, setRegisterError] = useState(false);
 
-
-  
-  const onFinish = (values: RegisterFormData) => {
+  const onFinish = (values) => {
     dispatch(
       registerRequest(
         values.firstName,
