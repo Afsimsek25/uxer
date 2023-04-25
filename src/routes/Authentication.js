@@ -5,7 +5,7 @@ const Authentication = ({ children }) => {
     const { user } = useAuth();
     const location = useLocation();
     console.log("authen", user)
-    if (!user.token.accessToken) {
+    if (!user.token || !user.token.accessToken) {
         return <Navigate to="/login" state={{ path: location.pathname }} />;
     }
     return children;
