@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+
 const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
@@ -9,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const loginState = useSelector((state) => state.login);
   let [user, setUser] = useState({ token: null, permissions: [] });
   const usr = JSON.parse(localStorage.getItem('token'));
+
   if (usr) {
       user = usr;
   }

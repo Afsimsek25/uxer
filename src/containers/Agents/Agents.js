@@ -4,8 +4,11 @@ import HeaderComponent from "../../components/HeaderComponent";
 import axios from "axios";
 import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 
+
 const { Content } = Layout;
 const { Search } = Input;
+const usr = JSON.parse(localStorage.getItem('token'));
+
 
 const AgentsPage = () => {
   const [agents, setAgents] = useState([]);
@@ -27,7 +30,7 @@ const AgentsPage = () => {
         headers: {
           accept: "*/*",
           Authorization:
-            "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3VzZXJkYXRhIjoiYWZzaW1zZWsiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJhZnNpbXNlazI1QGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IlNhIiwiVXhlclRva2VuVHlwZSI6IlVzZXIiLCJVeGVyQWNjb3VudElkIjoiIiwiVXhlclVzZXJJZCI6IjQxMjAyY2VmLTVkZmMtNDQ2NC05ZWQwLTFlZWUzODMyMmUwYyIsIm5iZiI6MTY4MjUxOTU0OCwiZXhwIjoxNjg4NTE5NDg4LCJpc3MiOiJ1LXhlci5jb20iLCJhdWQiOiJ1LXhlci5jb20ifQ.uGqNkyHy6SrIQgjSlkpUVB7SlF-y-RwMB4kUgPEeVpH7sHDyeM8wSSU27l7PLO0Fu6o5UXcHy0MS_9IKdGBpWA",
+          `Bearer ${usr.token.accessToken}`,
           "Content-Type": "application/json",
         },
       }
