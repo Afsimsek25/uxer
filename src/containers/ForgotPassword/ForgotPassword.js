@@ -1,25 +1,27 @@
 // src/containers/ForgotPassword/ForgotPassword.tsx
-import React, { useState } from 'react';
-import { Form, Input, Button, Row, Col, Typography } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Form, Input, Button, Row, Col, Typography } from "antd";
+import { MailOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 
 const { Title } = Typography;
 
-const ForgotPassword= () => {
+const ForgotPassword = () => {
   const [loading, setLoading] = useState(false);
 
   const onFinish = (values) => {
     setLoading(true);
-    console.log('Received values of form: ', values);
+    console.log("Received values of form: ", values);
     // Burada API çağrısı yaparak şifre sıfırlama e-postası gönderebilirsiniz.
     // setLoading(false) ile yüklenme durumunu kapatmayı unutmayın.
   };
 
   return (
-    <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
+    <Row justify="center" align="middle" style={{ minHeight: "100vh" }}>
       <Col xs={24} sm={12} md={8} lg={6}>
-        <Title level={2}>Şifremi Unuttum</Title>
+        <Title level={2}>
+          Please enter your email address to recover your password
+        </Title>
         <Form
           name="forgot_password"
           initialValues={{ remember: true }}
@@ -28,8 +30,11 @@ const ForgotPassword= () => {
           <Form.Item
             name="email"
             rules={[
-              { required: true, message: 'Lütfen e-posta adresinizi girin!' },
-              { type: 'email', message: 'Lütfen geçerli bir e-posta adresi girin!' },
+              { required: true, message: "Please enter your e-mail address!" },
+              {
+                type: "email",
+                message: "Please enter a valid email address!",
+              },
             ]}
           >
             <Input
@@ -43,13 +48,13 @@ const ForgotPassword= () => {
               type="primary"
               htmlType="submit"
               loading={loading}
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
             >
-              Şifre Sıfırlama Bağlantısı Gönder
+              Send
             </Button>
           </Form.Item>
         </Form>
-        <Link to="/login">Giriş Yap</Link>
+        <Link to="/login">Log In</Link>
       </Col>
     </Row>
   );

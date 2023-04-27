@@ -3,6 +3,7 @@ import { Layout, Breadcrumb } from "antd";
 import LeftSideBar from "../../components/LeftSideBar";
 import Sider from "antd/es/layout/Sider";
 import HeaderComponent from "../../components/HeaderComponent";
+import DataTable from "../../components/table/DataTable";
 
 const { Content } = Layout;
 
@@ -13,11 +14,8 @@ const HomePage = () => {
     <HeaderComponent />
     <div style={{ height: "32px" }}></div>
     <Layout>
-      <Sider>
-        <LeftSideBar />
-      </Sider>
       <Layout>
-        <Content>Content</Content>
+       <DataTable></DataTable>
       </Layout>
     </Layout>
   </Layout>

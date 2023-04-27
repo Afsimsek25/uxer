@@ -21,5 +21,3 @@ export const loginSuccess = createAction('LOGIN_SUCCESS', (data) => ({
 export const loginFailure = createAction('LOGIN_FAILURE', (error) => ({
   payload: { error },
 }));
-
-export const clearLoginData = createAction('CLEAR_LOGIN_DATA');

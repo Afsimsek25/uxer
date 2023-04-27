@@ -10,33 +10,24 @@ import {
   LogoutOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { clearLoginData } from "../redux/actions/loginActions";
+import { useAuth } from "../provider/AuthProvider";
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 const { Header } = Layout;
 
-const HeaderComponent= () => {
-  const loginState = useSelector((state) => state.login);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  
-
-  const logout = () => {
-    dispatch(clearLoginData());
-    localStorage.removeItem("data");
-    sessionStorage.removeItem("data");
-    loginState.data = null;
-    navigate("/login");
+const HeaderComponent = () => {
+  const { logout } = useAuth();
+  const logoutHandler = () => {
+    logout();
   };
 
   const userMenu = (
     <Menu>
-      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logout}>
+      <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutHandler}>
         Logout
       </Menu.Item>
-      <Menu.Item key="logout" icon={<SettingOutlined />} >
+      <Menu.Item key="settings" icon={<SettingOutlined />}>
         Settings
       </Menu.Item>
     </Menu>
@@ -53,9 +44,14 @@ const HeaderComponent= () => {
     <Header>
       <Row align="middle" justify="space-between">
         <Col>
+        <Link to="/homepage"> 
+          <img src={logo} alt="u-xer" style={{ height: "40px", marginRight: "16px" }} />
+        </Link>
           <Space>
-            <Button type="text" style={{ color: "white" }}>
-              Project
+          <Button type="text" style={{ color: "white" }}>
+              <Link to="/homepage" style={{ color: "inherit" }}>
+                Projects
+              </Link>
             </Button>
             <Button type="text" style={{ color: "white" }}>
               Monitor
@@ -67,7 +63,9 @@ const HeaderComponent= () => {
               Reports
             </Button>
             <Button type="text" style={{ color: "white" }}>
-              Agents
+              <Link to="/agents" style={{ color: "inherit" }}>
+                Agents
+              </Link>
             </Button>
             <Button type="text" style={{ color: "white" }}>
               Integrations

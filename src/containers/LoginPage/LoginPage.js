@@ -90,7 +90,7 @@ const LoginPage=() => {
               loading={loading}
               style={{ width: '100%' }}
             >
-              Log in
+              Log In
             </Button>
           </Form.Item>
         </Form>
