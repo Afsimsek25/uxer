@@ -23,7 +23,6 @@ export const userLogin = (email, password) => {
         password: password,
     }
     let result = config.post("Auth/login", sendParams)
-    console.log("result", result);
     return result;
 }
 export const userRegister = (firstName, lastName,userName,email,password,passwordConfirm) => {
@@ -35,6 +34,5 @@ export const userRegister = (firstName, lastName,userName,email,password,passwor
         password:password,
         passwordConfirm:passwordConfirm
     }
-    console.log(sendParams)
     return config.post("User/register", sendParams)
 }

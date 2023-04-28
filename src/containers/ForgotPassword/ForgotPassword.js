@@ -11,7 +11,6 @@ const ForgotPassword = () => {
 
   const onFinish = (values) => {
     setLoading(true);
-    console.log("Received values of form: ", values);
     // Burada API çağrısı yaparak şifre sıfırlama e-postası gönderebilirsiniz.
     // setLoading(false) ile yüklenme durumunu kapatmayı unutmayın.
   };

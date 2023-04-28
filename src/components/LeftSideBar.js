@@ -21,7 +21,7 @@ const usr = JSON.parse(localStorage.getItem("token"));
 
 const LeftSideBar = () => {
   const onClick = (e) => {
-    console.log("click ", e);
+    
   };
   const [folders, setFolders] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -53,7 +53,6 @@ const LeftSideBar = () => {
           }
         );
         setProjects(response.data);
-        console.log("projects:", projects);
       } catch (error) {
         console.error("Error fetching projects:", error);
         console.error("Error response data:", error.response.data);
@@ -66,11 +65,6 @@ const LeftSideBar = () => {
       fetchProjects();
     }
   }, [selectedProjectId]);
-  useEffect(() => {
-    if (showSearchInput && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [showSearchInput]);
 
   const fetchFolders = async (projectId) => {
     try {
@@ -89,7 +83,6 @@ const LeftSideBar = () => {
         }
       );
       setFolders(response.data);
-      console.log("folders : ", folders);
       return response.data; // Add this line to return the fetched folders
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -101,11 +94,6 @@ const LeftSideBar = () => {
   };
   const handleSearchClick = () => {
     setShowSearchInput(!showSearchInput);
-    if (!showSearchInput && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current.focus();
-      }, 100);
-    }
   };
   const handleNewFolder = () => {
     setIsModalVisible(true);
@@ -205,21 +193,17 @@ const LeftSideBar = () => {
       ))}
     </Menu>
   );
-  
-  useOutsideClick(searchInputRef, () => {
-    if (showSearchInput) {
-      setShowSearchInput(false);
-    }
-  }, editInputRef);
-  
-  useOutsideClick(editInputRef, () => {
-    if (isEditing) {
-      setIsEditing(false);
-      setEditingFolderId(null);
-    }
-  }, searchInputRef);
-  
-  
+
+  useOutsideClick(
+    editInputRef,
+    () => {
+      if (isEditing) {
+        setIsEditing(false);
+        setEditingFolderId(null);
+      }
+    },
+    searchInputRef
+  );
 
   return (
     <>
@@ -335,7 +319,11 @@ const LeftSideBar = () => {
                   {hoveredFolderId === folder.id && (
                     <span>
                       <EditOutlined
-                        onClick={() => handleEditClick(folder.id, folder.name)}
+                        onClick={() => {
+                          if (editedFolderName !== folder.name) {
+                            handleEditClick(folder.id, folder.name);
+                          }
+                        }}
                       />
                       <DeleteOutlined
                         onClick={() => handleDeleteClick(folder.id)}

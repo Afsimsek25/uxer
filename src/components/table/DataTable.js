@@ -49,7 +49,6 @@ const DataTable = () => {
     
         const responseData = response.data;
 
-        console.log(response.data)
     
         const fetchedColumns = Object.keys(responseData[0]).map((key) => ({
           title: key,

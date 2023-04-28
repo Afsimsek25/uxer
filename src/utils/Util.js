@@ -16,13 +16,12 @@ export const decrypt = (ciphertext) => {
 export const control = () => {
     //Remember control
     const stremember = localStorage.getItem('data')
-    console.log(stremember)
 
     if (stremember) {
         sessionStorage.setItem('data', stremember)
     }
     const stEncData = sessionStorage.getItem('data')
-    console.log(stEncData)
+
 
     if (stEncData) {
         try {

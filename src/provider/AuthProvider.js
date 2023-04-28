@@ -21,11 +21,9 @@ export const AuthProvider = ({ children }) => {
     if (usr) {
         setUser(usr);
     }
-    console.log("authprovider1", usr);
   }, []);
 
   function login(token) {
-    console.log('token:', token);
     if (token) {
       setUser({ token: token, permissions: ["view_extra"] });
       localStorage.setItem('token', JSON.stringify({ token: token, permissions: ["view_extra"] }));
