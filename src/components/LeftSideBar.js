@@ -26,7 +26,7 @@ const LeftSideBar = () => {
   const [folders, setFolders] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
-  const [selectedProject, setSelectedProject] = useState("My Project");
+  const [selectedProject, setSelectedProject] = useState();
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
@@ -53,6 +53,7 @@ const LeftSideBar = () => {
           }
         );
         setProjects(response.data);
+        return response.data; // Bu satırı ekleyin, projeleri döndürün
       } catch (error) {
         console.error("Error fetching projects:", error);
         console.error("Error response data:", error.response.data);
@@ -62,9 +63,15 @@ const LeftSideBar = () => {
     if (selectedProjectId) {
       fetchFolders(selectedProjectId);
     } else {
-      fetchProjects();
+      fetchProjects().then((fetchedProjects) => {
+        if (fetchedProjects && fetchedProjects.length > 0) {
+          setSelectedProject(fetchedProjects[0].name);
+          setSelectedProjectId(fetchedProjects[0].id);
+        }
+      });
     }
   }, [selectedProjectId]);
+
 
   const fetchFolders = async (projectId) => {
     try {
