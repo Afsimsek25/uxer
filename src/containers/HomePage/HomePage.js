@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Layout, Breadcrumb } from "antd";
+// src/containers/HomePage/HomePage.js
+
+import React from "react";
+import { Layout } from "antd";
 import LeftSideBar from "../../components/LeftSideBar";
 import Sider from "antd/es/layout/Sider";
 import HeaderComponent from "../../components/HeaderComponent";
@@ -7,24 +9,16 @@ import HeaderComponent from "../../components/HeaderComponent";
 const { Content } = Layout;
 
 const HomePage = () => {
-
   return (
-  <Layout>
-    <HeaderComponent />
-    <div style={{ height: "32px" }}></div>
     <Layout>
-      <Sider>
-        <LeftSideBar />
-      </Sider>
+      <HeaderComponent /> 
       <Layout>
-        <Content>Content</Content>
+        <Sider>
+          <LeftSideBar />
+        </Sider>
       </Layout>
     </Layout>
-  </Layout>
-);
-
-  
-  
+  );
 };
 
 export default HomePage;
