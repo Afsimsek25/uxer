@@ -8,6 +8,7 @@ import {
   DownOutlined,
   EditOutlined,
   DeleteOutlined,
+  AppstoreAddOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
@@ -20,9 +21,7 @@ const { Search } = Input;
 const usr = JSON.parse(localStorage.getItem("token"));
 
 const LeftSideBar = () => {
-  const onClick = (e) => {
-    
-  };
+  const onClick = (e) => {};
   const [folders, setFolders] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -39,27 +38,6 @@ const LeftSideBar = () => {
   const searchInputRef = useRef();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.post(
-          "https://gateway-test.u-xer.com/api/Project/search",
-          {},
-          {
-            headers: {
-              Accept: "*/*",
-              Authorization: `Bearer ${usr.token.accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setProjects(response.data);
-        return response.data; // Bu satırı ekleyin, projeleri döndürün
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-        console.error("Error response data:", error.response.data);
-      }
-    };
-
     if (selectedProjectId) {
       fetchFolders(selectedProjectId);
     } else {
@@ -72,7 +50,26 @@ const LeftSideBar = () => {
     }
   }, [selectedProjectId]);
 
-
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.post(
+        "https://gateway-test.u-xer.com/api/Project/search",
+        {},
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setProjects(response.data);
+      return response.data; // Bu satırı ekleyin, projeleri döndürün
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      console.error("Error response data:", error.response.data);
+    }
+  };
   const fetchFolders = async (projectId) => {
     try {
       const response = await axios.post(
@@ -90,7 +87,7 @@ const LeftSideBar = () => {
         }
       );
       setFolders(response.data);
-      return response.data; // Add this line to return the fetched folders
+      return response.data;
     } catch (error) {
       console.error("Error fetching folders:", error);
       console.error("Error response data:", error.response.data);
@@ -191,15 +188,159 @@ const LeftSideBar = () => {
       console.error("Error response data:", error.response.data);
     }
   };
-  const projectMenu = (
-    <Menu>
-      {projects.map((project) => (
-        <Menu.Item key={project.id} onClick={() => handleProjectClick(project)}>
-          {project.name}
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+
+  ///////////////// Projects ///////////////////
+  const [isProjectInputVisible, setIsProjectInputVisible] = useState(false);
+  const [hoveredProjectId, setHoveredProjectId] = useState(null);
+  const [editingProjectId, setEditingProjectId] = useState(null);
+  const [editedProjectName, setEditedProjectName] = useState("");
+
+  const handleNewProjectClick = () => {
+    setIsProjectInputVisible(true);
+  };
+  const handleEditProjectClick = (projectId, projectName) => {
+    setEditingProjectId(projectId);
+    setEditedProjectName(projectName);
+  };
+  
+  const handleUpdateProject = async (projectId, newName) => {
+    await handleEditProject(projectId, newName);
+    setEditingProjectId(null);
+  };
+  const handleCreateProject = async (projectName) => {
+    try {
+      const response = await axios.post(
+        "https://gateway-test.u-xer.com/api/Project",
+        {
+          name: projectName,
+          description: "",
+        },
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch projects again to update the list
+      fetchProjects().then((newProjects) => {
+        setProjects(newProjects);
+      });
+    } catch (error) {
+      console.error("Error creating project:", error);
+      console.error("Error response data:", error.response.data);
+    }
+  };
+  const handleEditProject = async (projectId, newName) => {
+    try {
+      const response = await axios.put(
+        `https://gateway-test.u-xer.com/api/Project/${projectId}`,
+        {
+          name: newName,
+          description: "string",
+        },
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Fetch projects again to update the list
+      fetchProjects().then((fetchedProjects) => {
+        setProjects(fetchedProjects);
+      });
+    } catch (error) {
+      console.error("Error updating project:", error);
+      console.error("Error response data:", error.response.data);
+    }
+  };
+  const handleDeleteProject = async (projectId) => {
+    try {
+      await axios.delete(
+        `https://gateway-test.u-xer.com/api/Project/${projectId}`,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+          },
+        }
+      );
+
+      // Fetch projects again to update the list
+      fetchProjects().then((fetchedProjects) => {
+        setProjects(fetchedProjects);
+      });
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      console.error("Error response data:", error.response.data);
+    }
+  };
+  
+    const projectMenu = (
+      <Menu>
+    {projects.map((project) => (
+      <Menu.Item
+        key={project.id}
+        onMouseEnter={() => setHoveredProjectId(project.id)}
+        onMouseLeave={() => setHoveredProjectId(null)}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          {editingProjectId === project.id ? (
+            <Input
+              value={editedProjectName}
+              onChange={(e) => setEditedProjectName(e.target.value)}
+              onPressEnter={() => handleUpdateProject(project.id, editedProjectName)}
+            />
+          ) : (
+            <span onClick={() => handleProjectClick(project)}>{project.name}</span>
+          )}
+          {hoveredProjectId === project.id && editingProjectId !== project.id && (
+            <span>
+              <EditOutlined
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditProjectClick(project.id, project.name);
+                }}
+              />
+              <DeleteOutlined onClick={() => handleDeleteProject(project.id)} />
+            </span>
+          )}
+        </div>
+      </Menu.Item>
+    ))}
+    <Menu.Divider />
+
+        {isProjectInputVisible ? (
+          <Input
+            placeholder="Enter project name"
+            onPressEnter={(e) => {
+              handleCreateProject(e.target.value);
+              setIsProjectInputVisible(false);
+            }}
+          />
+        ) : (
+          <Button
+            type="link"
+            icon={<AppstoreAddOutlined />}
+            onClick={handleNewProjectClick}
+          >
+            New Project
+          </Button>
+        )}
+      </Menu>
+    );
 
   useOutsideClick(
     editInputRef,
