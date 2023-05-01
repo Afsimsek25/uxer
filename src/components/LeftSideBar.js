@@ -80,7 +80,8 @@ const LeftSideBar = () => {
         "https://gateway-test.u-xer.com/api/Folder/search",
         {
           projectId: projectId,
-          withTests: true,
+          asTree: true,
+          includeChildren: true,
         },
         {
           headers: {
@@ -91,6 +92,7 @@ const LeftSideBar = () => {
         }
       );
       setFolders(response.data);
+      console.log(response.data)
       return response.data;
     } catch (error) {
       console.error("Error fetching folders:", error);

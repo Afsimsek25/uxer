@@ -6,6 +6,7 @@ import Authentication from "./Authentication";
 import ForgotPassword from "../containers/ForgotPassword/ForgotPassword";
 import Accounts from "../containers/Accounts/Accounts";
 import AgentsPage from "../containers/Agents/Agents"
+import Register from "../containers/Register/Register";
 
 const RoutePath = () => {
   return (
@@ -38,9 +39,9 @@ const RoutePath = () => {
       />
 
       <Route
-      path="/"
+      path="/register"
       element={
-          <HomePage />
+          <Register />
       }
     />
     </Routes>
