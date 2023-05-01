@@ -13,9 +13,11 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
-import { HiOutlinePuzzle } from "react-icons/hi";
+import { HiOutlinePuzzle,HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { IoAppsOutline } from "react-icons/io5";
 import { BsSliders } from "react-icons/bs";
+import { TiDelete, TiEdit} from "react-icons/ti";
+
 
 const { Sider } = Layout;
 const { Search } = Input;
@@ -341,14 +343,14 @@ const LeftSideBar = () => {
           )}
            {hoveredProjectId === project.id && editingProjectId !== project.id && (
         <span>
-          <EditOutlined
+          <TiEdit
             onClick={(e) => {
               e.stopPropagation();
               handleEditProjectClick(project.id, project.name);
             }}
           />
-          <DeleteOutlined onClick={() => handleDeleteProject(project.id)} />
-          <CopyOutlined onClick={() => handleDuplicateProject(project.id)} /> {/* Duplicate button */}
+          <HiOutlineDocumentDuplicate onClick={() => handleDuplicateProject(project.id)} /> {/* Duplicate button */}
+          <TiDelete onClick={() => handleDeleteProject(project.id)} />
         </span>
       )}  
         </div>
@@ -500,14 +502,14 @@ const LeftSideBar = () => {
                   )}
                   {hoveredFolderId === folder.id && (
                     <span>
-                      <EditOutlined
+                      <TiEdit
                         onClick={() => {
                           if (editedFolderName !== folder.name) {
                             handleEditClick(folder.id, folder.name);
                           }
                         }}
                       />
-                      <DeleteOutlined
+                      <TiDelete
                         onClick={() => handleDeleteClick(folder.id)}
                       />
                     </span>
