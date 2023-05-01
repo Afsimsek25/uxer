@@ -9,6 +9,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   AppstoreAddOutlined,
+  CopyOutlined, 
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
@@ -64,6 +65,7 @@ const LeftSideBar = () => {
         }
       );
       setProjects(response.data);
+      console.log(response.data)
       return response.data; // Bu satırı ekleyin, projeleri döndürün
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -227,6 +229,11 @@ const LeftSideBar = () => {
       // Fetch projects again to update the list
       fetchProjects().then((newProjects) => {
         setProjects(newProjects);
+        // Select the newly added project
+        const newProject = newProjects.find((proj) => proj.name === projectName);
+        if (newProject) {
+          handleProjectClick(newProject);
+        }
       });
     } catch (error) {
       console.error("Error creating project:", error);
@@ -274,9 +281,35 @@ const LeftSideBar = () => {
       // Fetch projects again to update the list
       fetchProjects().then((fetchedProjects) => {
         setProjects(fetchedProjects);
+        // Select the first project after deletion
+        if (fetchedProjects.length > 0) {
+          handleProjectClick(fetchedProjects[0]);
+        }
       });
     } catch (error) {
       console.error("Error deleting project:", error);
+      console.error("Error response data:", error.response.data);
+    }
+  };
+  const handleDuplicateProject = async (projectId) => {
+    try {
+      const response = await axios.put(
+        `https://gateway-test.u-xer.com/api/Project/duplicate/${projectId}`,
+        {},
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+          },
+        }
+      );
+  
+      // Fetch projects again to update the list
+      fetchProjects().then((fetchedProjects) => {
+        setProjects(fetchedProjects);
+      });
+    } catch (error) {
+      console.error("Error duplicating project:", error);
       console.error("Error response data:", error.response.data);
     }
   };
@@ -306,17 +339,18 @@ const LeftSideBar = () => {
           ) : (
             <span onClick={() => handleProjectClick(project)}>{project.name}</span>
           )}
-          {hoveredProjectId === project.id && editingProjectId !== project.id && (
-            <span>
-              <EditOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleEditProjectClick(project.id, project.name);
-                }}
-              />
-              <DeleteOutlined onClick={() => handleDeleteProject(project.id)} />
-            </span>
-          )}
+           {hoveredProjectId === project.id && editingProjectId !== project.id && (
+        <span>
+          <EditOutlined
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEditProjectClick(project.id, project.name);
+            }}
+          />
+          <DeleteOutlined onClick={() => handleDeleteProject(project.id)} />
+          <CopyOutlined onClick={() => handleDuplicateProject(project.id)} /> {/* Duplicate button */}
+        </span>
+      )}  
         </div>
       </Menu.Item>
     ))}
