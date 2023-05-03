@@ -6,10 +6,7 @@ import {
   FolderOutlined,
   FolderAddOutlined,
   DownOutlined,
-  EditOutlined,
-  DeleteOutlined,
   AppstoreAddOutlined,
-  CopyOutlined, 
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
@@ -20,7 +17,6 @@ import { TiDelete, TiEdit} from "react-icons/ti";
 
 
 const { Sider } = Layout;
-const { Search } = Input;
 const usr = JSON.parse(localStorage.getItem("token"));
 
 const LeftSideBar = () => {
@@ -52,7 +48,6 @@ const LeftSideBar = () => {
       });
     }
   }, [selectedProjectId]);
-
   const fetchProjects = async () => {
     try {
       const response = await axios.post(
@@ -208,7 +203,6 @@ const LeftSideBar = () => {
     setEditingProjectId(projectId);
     setEditedProjectName(projectName);
   };
-  
   const handleUpdateProject = async (projectId, newName) => {
     await handleEditProject(projectId, newName);
     setEditingProjectId(null);
@@ -318,7 +312,7 @@ const LeftSideBar = () => {
     }
   };
   
-    const projectMenu = (
+  const projectMenu = (
       <Menu>
     {projects.map((project) => (
       <Menu.Item
@@ -378,7 +372,7 @@ const LeftSideBar = () => {
           </Button>
         )}
       </Menu>
-    );
+  );
 
   useOutsideClick(
     editInputRef,
