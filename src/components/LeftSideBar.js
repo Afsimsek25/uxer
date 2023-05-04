@@ -11,6 +11,10 @@ import {
   EditOutlined,
   DeleteOutlined,
   CopyOutlined,
+  TeamOutlined,
+  PieChartOutlined,
+  LeftOutlined,
+  ProjectOutlined
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
@@ -29,13 +33,15 @@ const LeftSideBar = () => {
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [selectedProject, setSelectedProject] = useState();
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projects, setProjects] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editingFolderId, setEditingFolderId] = useState(null);
   const [editedFolderName, setEditedFolderName] = useState("");
   const [hoveredFolderId, setHoveredFolderId] = useState(null);
-  const [projects, setProjects] = useState([]);
+  const [collapsed, setCollapsed] = useState(false);
+
   const editInputRef = useRef();
   const searchInputRef = useRef();
 
@@ -166,11 +172,11 @@ const LeftSideBar = () => {
     setSelectedProject(project.name);
     setSelectedProjectId(project.id);
   };
-  const handleEditClick = (folderId, folderName) => {
+  function handleEditClick(folderId, folderName) {
     setIsEditing(true);
     setEditingFolderId(folderId);
     setEditedFolderName(folderName);
-  };
+  }
   const handleDeleteClick = async (folderId) => {
     try {
       await axios.delete(
@@ -198,40 +204,60 @@ const LeftSideBar = () => {
   const [hoveredProjectId, setHoveredProjectId] = useState(null);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editedProjectName, setEditedProjectName] = useState("");
+  const [isEditProjectModalVisible, setIsEditProjectModalVisible] =
+    useState(false);
+  const [editedProjectDescription, setEditedProjectDescription] = useState("");
+
+  const openEditProjectModal = (projectId, projectName, projectDescription) => {
+    setEditingProjectId(projectId);
+    setEditedProjectName(projectName);
+    setEditedProjectDescription(projectDescription || "");
+    setIsEditProjectModalVisible(true);
+  };
+  const handleEditProjectModalOk = () => {
+    handleUpdateProject(
+      editingProjectId,
+      editedProjectName,
+      editedProjectDescription
+    );
+    setIsEditProjectModalVisible(false);
+  };
 
   const moreProjectOptions = (project) => (
     <Menu>
-    <Menu.Item
-      key="edit"
-      icon={<EditOutlined/>}
-      onClick={() => {
-        handleEditProjectClick(project.id, project.name);
-      }}
-    >
-      Edit
-    </Menu.Item>
-    <Menu.Item
-      key="duplicate"
-      icon={<CopyOutlined/>}
-      onClick={() => handleDuplicateProject(project.id)}
-    >
-      Duplicate
-    </Menu.Item>
-    <Menu.Item
-      key="delete"
-      icon={<DeleteOutlined/>}
-      onClick={() => handleDeleteProject(project.id)}
-    >
-      Delete
-    </Menu.Item>
-  </Menu>
+      <Menu.Item
+        key="project_edit"
+        icon={<EditOutlined />}
+        onClick={(e) => {
+          openEditProjectModal(project.id, project.name, project.description);
+        }}
+      >
+        Edit
+      </Menu.Item>
+      <Menu.Item
+        key="project_duplicate"
+        icon={<CopyOutlined />}
+        onClick={() => handleDuplicateProject(project.id)}
+      >
+        Duplicate
+      </Menu.Item>
+      <Menu.Item key="users" icon={<TeamOutlined />}>
+        Users
+      </Menu.Item>
+      <Menu.Item key="reports" icon={<PieChartOutlined />}>
+        Reports
+      </Menu.Item>
+      <Menu.Item
+        key="delproject_delete"
+        icon={<DeleteOutlined />}
+        onClick={() => handleDeleteProject(project.id)}
+      >
+        Delete
+      </Menu.Item>
+    </Menu>
   );
   const handleNewProjectClick = () => {
     setIsProjectInputVisible(true);
-  };
-  const handleEditProjectClick = (projectId, projectName) => {
-    setEditingProjectId(projectId);
-    setEditedProjectName(projectName);
   };
   const handleUpdateProject = async (projectId, newName) => {
     await handleEditProject(projectId, newName);
@@ -346,7 +372,7 @@ const LeftSideBar = () => {
   const projectMenu = (
     <Menu
       style={{
-        zIndex: 5, // Reduce zIndex value of the Menu component
+        zIndex: 5,
       }}
     >
       <Menu.Divider />
@@ -382,19 +408,9 @@ const LeftSideBar = () => {
               width: "100%",
             }}
           >
-            {editingProjectId === project.id ? (
-              <Input
-                value={editedProjectName}
-                onChange={(e) => setEditedProjectName(e.target.value)}
-                onPressEnter={() =>
-                  handleUpdateProject(project.id, editedProjectName)
-                }
-              />
-            ) : (
-              <span onClick={() => handleProjectClick(project)}>
-                {project.name}
-              </span>
-            )}
+            <span onClick={() => handleProjectClick(project)}>
+              {project.name}
+            </span>
             {hoveredProjectId === project.id &&
               editingProjectId !== project.id && (
                 <span>
@@ -456,7 +472,7 @@ const LeftSideBar = () => {
                   justifyContent: "space-between",
                   cursor: "pointer",
                 }}
-              >
+              > 
                 <span>{selectedProject}</span>
                 <DownOutlined />
               </div>
@@ -468,6 +484,7 @@ const LeftSideBar = () => {
             icon={<FolderOutlined />}
             title="Tests & Jobs"
           >
+            
             <div
               style={{
                 display: "flex",
@@ -603,6 +620,24 @@ const LeftSideBar = () => {
           placeholder="Enter folder name"
           value={newFolderName}
           onChange={(e) => setNewFolderName(e.target.value)}
+        />
+      </Modal>
+      <Modal
+        title="Edit Project"
+        visible={isEditProjectModalVisible}
+        onOk={handleEditProjectModalOk}
+        onCancel={() => setIsEditProjectModalVisible(false)}
+      >
+        <Input
+          placeholder="Enter project name"
+          value={editedProjectName}
+          onChange={(e) => setEditedProjectName(e.target.value)}
+        />
+        <Input.TextArea
+          placeholder="Enter project description"
+          value={editedProjectDescription}
+          onChange={(e) => setEditedProjectDescription(e.target.value)}
+          style={{ marginTop: "16px" }}
         />
       </Modal>
     </>
