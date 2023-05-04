@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Layout, Menu, Button, Input, Dropdown, Modal } from "antd";
+import { Layout, Menu, Button, Input, Dropdown, Modal, Popover } from "antd";
 import useOutsideClick from "./useOutsideClick";
 import {
   SearchOutlined,
@@ -7,14 +7,17 @@ import {
   FolderAddOutlined,
   DownOutlined,
   AppstoreAddOutlined,
+  MoreOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  CopyOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
-import { HiOutlinePuzzle,HiOutlineDocumentDuplicate } from "react-icons/hi";
+import { HiOutlinePuzzle, HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { IoAppsOutline } from "react-icons/io5";
 import { BsSliders } from "react-icons/bs";
-import { TiDelete, TiEdit} from "react-icons/ti";
-
+import { TiDelete, TiEdit } from "react-icons/ti";
 
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
@@ -62,7 +65,7 @@ const LeftSideBar = () => {
         }
       );
       setProjects(response.data);
-      console.log(response.data)
+      console.log(response.data);
       return response.data; // Bu satırı ekleyin, projeleri döndürün
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -87,7 +90,7 @@ const LeftSideBar = () => {
         }
       );
       setFolders(response.data);
-      console.log(response.data)
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -196,6 +199,33 @@ const LeftSideBar = () => {
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editedProjectName, setEditedProjectName] = useState("");
 
+  const moreProjectOptions = (project) => (
+    <Menu>
+    <Menu.Item
+      key="edit"
+      icon={<EditOutlined/>}
+      onClick={() => {
+        handleEditProjectClick(project.id, project.name);
+      }}
+    >
+      Edit
+    </Menu.Item>
+    <Menu.Item
+      key="duplicate"
+      icon={<CopyOutlined/>}
+      onClick={() => handleDuplicateProject(project.id)}
+    >
+      Duplicate
+    </Menu.Item>
+    <Menu.Item
+      key="delete"
+      icon={<DeleteOutlined/>}
+      onClick={() => handleDeleteProject(project.id)}
+    >
+      Delete
+    </Menu.Item>
+  </Menu>
+  );
   const handleNewProjectClick = () => {
     setIsProjectInputVisible(true);
   };
@@ -228,7 +258,9 @@ const LeftSideBar = () => {
       fetchProjects().then((newProjects) => {
         setProjects(newProjects);
         // Select the newly added project
-        const newProject = newProjects.find((proj) => proj.name === projectName);
+        const newProject = newProjects.find(
+          (proj) => proj.name === projectName
+        );
         if (newProject) {
           handleProjectClick(newProject);
         }
@@ -301,7 +333,7 @@ const LeftSideBar = () => {
           },
         }
       );
-  
+
       // Fetch projects again to update the list
       fetchProjects().then((fetchedProjects) => {
         setProjects(fetchedProjects);
@@ -311,67 +343,76 @@ const LeftSideBar = () => {
       console.error("Error response data:", error.response.data);
     }
   };
-  
   const projectMenu = (
-      <Menu>
-    {projects.map((project) => (
-      <Menu.Item
-        key={project.id}
-        onMouseEnter={() => setHoveredProjectId(project.id)}
-        onMouseLeave={() => setHoveredProjectId(null)}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          {editingProjectId === project.id ? (
-            <Input
-              value={editedProjectName}
-              onChange={(e) => setEditedProjectName(e.target.value)}
-              onPressEnter={() => handleUpdateProject(project.id, editedProjectName)}
-            />
-          ) : (
-            <span onClick={() => handleProjectClick(project)}>{project.name}</span>
-          )}
-           {hoveredProjectId === project.id && editingProjectId !== project.id && (
-        <span>
-          <TiEdit
-            onClick={(e) => {
-              e.stopPropagation();
-              handleEditProjectClick(project.id, project.name);
-            }}
-          />
-          <HiOutlineDocumentDuplicate onClick={() => handleDuplicateProject(project.id)} /> {/* Duplicate button */}
-          <TiDelete onClick={() => handleDeleteProject(project.id)} />
-        </span>
-      )}  
-        </div>
-      </Menu.Item>
-    ))}
-    <Menu.Divider />
+    <Menu
+      style={{
+        zIndex: 5, // Reduce zIndex value of the Menu component
+      }}
+    >
+      <Menu.Divider />
 
-        {isProjectInputVisible ? (
-          <Input
-            placeholder="Enter project name"
-            onPressEnter={(e) => {
-              handleCreateProject(e.target.value);
-              setIsProjectInputVisible(false);
+      {isProjectInputVisible ? (
+        <Input
+          placeholder="Enter project name"
+          onPressEnter={(e) => {
+            handleCreateProject(e.target.value);
+            setIsProjectInputVisible(false);
+          }}
+        />
+      ) : (
+        <Button
+          type="link"
+          icon={<AppstoreAddOutlined />}
+          onClick={handleNewProjectClick}
+        >
+          New Project
+        </Button>
+      )}
+      {projects.map((project) => (
+        <Menu.Item
+          key={project.id}
+          onMouseEnter={() => setHoveredProjectId(project.id)}
+          onMouseLeave={() => setHoveredProjectId(null)}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
             }}
-          />
-        ) : (
-          <Button
-            type="link"
-            icon={<AppstoreAddOutlined />}
-            onClick={handleNewProjectClick}
           >
-            New Project
-          </Button>
-        )}
-      </Menu>
+            {editingProjectId === project.id ? (
+              <Input
+                value={editedProjectName}
+                onChange={(e) => setEditedProjectName(e.target.value)}
+                onPressEnter={() =>
+                  handleUpdateProject(project.id, editedProjectName)
+                }
+              />
+            ) : (
+              <span onClick={() => handleProjectClick(project)}>
+                {project.name}
+              </span>
+            )}
+            {hoveredProjectId === project.id &&
+              editingProjectId !== project.id && (
+                <span>
+                  <Popover
+                    content={moreProjectOptions(project)}
+                    trigger="click"
+                    placement="bottom"
+                    overlayStyle={{ zIndex: 1050 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <MoreOutlined />
+                  </Popover>
+                </span>
+              )}
+          </div>
+        </Menu.Item>
+      ))}
+    </Menu>
   );
 
   useOutsideClick(
@@ -505,9 +546,7 @@ const LeftSideBar = () => {
                           }
                         }}
                       />
-                      <TiDelete
-                        onClick={() => handleDeleteClick(folder.id)}
-                      />
+                      <TiDelete onClick={() => handleDeleteClick(folder.id)} />
                     </span>
                   )}
                 </div>
