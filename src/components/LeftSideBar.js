@@ -445,19 +445,19 @@ const LeftSideBar = () => {
   return (
     <>
       <Sider
-        style={{
+          style={{
           height: "100vh",
           position: "fixed",
           left: 0,
           backgroundColor: "#fff",
         }}
-        width={256}
+        width={350}
       >
         {/* ... */}
 
         <Menu
           onClick={onClick}
-          style={{ width: 256, height: "100%" }}
+          style={{ width: 350, height: "100%" }}
           defaultSelectedKeys={["1"]}
           defaultOpenKeys={["sub1"]}
           mode="inline"
@@ -572,7 +572,7 @@ const LeftSideBar = () => {
           </Menu.SubMenu>
           <Menu
             onClick={onClick}
-            style={{ width: 256, height: "100%" }}
+            style={{ width: 350, height: "100%" }}
             defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub1"]}
             mode="inline"
