@@ -60,4 +60,7 @@
   color: #7a1313;
   margin: 0 auto;
 }
+.job-detail-icon:hover .delete-icon {
+  color: #808080 !important;
+}
 

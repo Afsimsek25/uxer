@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Menu, Button, Input, Dropdown, Modal, Popover } from "antd";
 import useOutsideClick from "./useOutsideClick";
 import {
@@ -41,6 +42,8 @@ const LeftSideBar = () => {
   const [editedFolderName, setEditedFolderName] = useState("");
   const [hoveredFolderId, setHoveredFolderId] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
+  const publicProjectId = useSelector((state) => state.project.publicProjectId);
+  const dispatch = useDispatch(); // Bu satırı ekledik
 
   const editInputRef = useRef();
   const searchInputRef = useRef();
@@ -53,10 +56,14 @@ const LeftSideBar = () => {
         if (fetchedProjects && fetchedProjects.length > 0) {
           setSelectedProject(fetchedProjects[0].name);
           setSelectedProjectId(fetchedProjects[0].id);
+          dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: fetchedProjects[0].id });
+
         }
       });
     }
+    
   }, [selectedProjectId]);
+
   const fetchProjects = async () => {
     try {
       const response = await axios.post(
@@ -171,6 +178,7 @@ const LeftSideBar = () => {
   const handleProjectClick = (project) => {
     setSelectedProject(project.name);
     setSelectedProjectId(project.id);
+    dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: project.id });
   };
   function handleEditClick(folderId, folderName) {
     setIsEditing(true);
@@ -414,13 +422,13 @@ const LeftSideBar = () => {
             {hoveredProjectId === project.id &&
               editingProjectId !== project.id && (
                 <span>
-                  <Popover
+                 <Popover
                     content={moreProjectOptions(project)}
                     trigger="click"
                     placement="bottom"
                     overlayStyle={{ zIndex: 1050 }}
                     onClick={(e) => e.stopPropagation()}
-                  >
+                  > 
                     <MoreOutlined />
                   </Popover>
                 </span>
