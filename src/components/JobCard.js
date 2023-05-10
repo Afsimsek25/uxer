@@ -21,7 +21,7 @@ const usr = JSON.parse(localStorage.getItem("token"));
 
 const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
   const [popoverVisible, setPopoverVisible] = useState(false);
-
+  const [visiblePopoverId, setVisiblePopoverId] = useState(null);
   const [expandedStates, setExpandedStates] = useState(
     Array(jobs.length).fill(false)
   );
@@ -46,16 +46,20 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
   };
   const duplicateJob = async (jobId) => {
     try {
-      await axios.put(`https://gateway-test.u-xer.com/api/Job/duplicate/${jobId}`, {}, {
-        headers: {
-          Accept: "*/*",
-          Authorization: `Bearer ${usr.token.accessToken}`,
-        },
-      });
+      await axios.put(
+        `https://gateway-test.u-xer.com/api/Job/duplicate/${jobId}`,
+        {},
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+          },
+        }
+      );
       // Job is successfully duplicated
       message.success("Job is successfully duplicated");
       // Fetch the jobs again to reflect the changes
-      onJobDeleted();  // we are reusing this callback to fetch the jobs again
+      onJobDeleted(); // we are reusing this callback to fetch the jobs again
     } catch (error) {
       console.error("Error duplicating job:", error);
     }
@@ -70,10 +74,13 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
       }
     );
   };
-  const handleVisibleChange = (visible) => {
-    setPopoverVisible(visible);
+  const handleVisibleChange = (visible, jobId) => {
+    if (visible) {
+      setVisiblePopoverId(jobId);
+    } else {
+      setVisiblePopoverId(null);
+    }
   };
-
   const moreJobOptions = (job) => (
     <Menu>
       <Menu.Item
@@ -169,8 +176,10 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
                       trigger="click"
                       placement="bottom"
                       onClick={(e) => e.stopPropagation()}
-                      visible={popoverVisible} // visible state'i kullanılır
-                      onVisibleChange={handleVisibleChange} // visible state'i kontrol eder
+                      visible={visiblePopoverId === job.id}
+                      onVisibleChange={(visible) =>
+                        handleVisibleChange(visible, job.id)
+                      }
                     >
                       <MoreOutlined />
                     </Popover>
