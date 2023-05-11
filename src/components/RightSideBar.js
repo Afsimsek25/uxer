@@ -1,4 +1,4 @@
-import React, { useState, useEffect ,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Button,
   Layout,
@@ -11,6 +11,7 @@ import {
   InputNumber,
   Row,
   Col,
+  Select,
 } from "antd";
 import {
   RightOutlined,
@@ -22,11 +23,13 @@ import {
 } from "@ant-design/icons";
 import "./RightSideBar.css";
 import JobCard from "./JobCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { agentRequest } from "../redux/actions/agentActions";
 
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
+
 const RightSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -35,29 +38,28 @@ const RightSideBar = () => {
   const [editJobModalVisible, setEditJobModalVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [editJob, setEditJob] = useState(null);
-  
-  const newJobFormRef = useRef(); 
+  const dispatch = useDispatch();
+  const agents = useSelector(state => state.agentReducer.agents);
+  const newJobFormRef = useRef();
   const editJobFormRef = useRef();
- 
 
-const showNewJobModal = () => {
-  if (newJobFormRef.current) {
-    newJobFormRef.current.resetFields();
-  }
-  setNewJobModalVisible(true);
-};
-
-const showEditJobModal = (job) => {
-  if (editJobFormRef.current) {
-    editJobFormRef.current.resetFields();
-  }
-  setEditJob(job);
-  setEditJobModalVisible(true);
-  // Form fields reset after setting the modal visible.
-  if (editJobFormRef.current) {
-    editJobFormRef.current.setFieldsValue(job);
-  }
-};
+  const showNewJobModal = () => {
+    if (newJobFormRef.current) {
+      newJobFormRef.current.resetFields();
+    }
+    setNewJobModalVisible(true);
+  };
+  const showEditJobModal = (job) => {
+    if (editJobFormRef.current) {
+      editJobFormRef.current.resetFields();
+    }
+    setEditJob(job);
+    setEditJobModalVisible(true);
+    // Form fields reset after setting the modal visible.
+    if (editJobFormRef.current) {
+      editJobFormRef.current.setFieldsValue(job);
+    }
+  };
   const handleNewJobModalCancel = () => {
     setNewJobModalVisible(false);
   };
@@ -92,7 +94,7 @@ const showEditJobModal = (job) => {
         "https://gateway-test.u-xer.com/api/Job",
         {
           ...values,
-          agentId: "c686be5a-5fdc-4c34-8e4c-10ff045462c5",
+          agentId: values.agent,
           projectId: publicProjectId,
         },
         {
@@ -113,7 +115,7 @@ const showEditJobModal = (job) => {
     const updatedJob = {
       ...editJob,
       ...values,
-      agentId: "c686be5a-5fdc-4c34-8e4c-10ff045462c5",
+      agentId: values.agent,
     };
 
     axios
@@ -132,6 +134,7 @@ const showEditJobModal = (job) => {
         console.log(err);
       });
   };
+
   const handleJobDeleted = () => {
     fetchJobs();
   };
@@ -140,9 +143,13 @@ const showEditJobModal = (job) => {
       fetchJobs();
     }
   }, [publicProjectId]);
+  useEffect(() => {
+    dispatch(agentRequest(""));
+  }, [dispatch]);
   const handleCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
+
   return (
     <Sider
       className="right-sidebar"
@@ -203,13 +210,13 @@ const showEditJobModal = (job) => {
         </div>
       )}
       <>
-      <Modal
-      title="New Job"
-      visible={newJobModalVisible}
-      onCancel={handleNewJobModalCancel}
-      footer={null}
-    >
-           <Form ref={newJobFormRef} onFinish={onFinish} layout="vertical">
+        <Modal
+          title="New Job"
+          visible={newJobModalVisible}
+          onCancel={handleNewJobModalCancel}
+          footer={null}
+        >
+          <Form ref={newJobFormRef} onFinish={onFinish} layout="vertical">
             <Form.Item label="Name" name="name">
               <Input />
             </Form.Item>
@@ -218,6 +225,15 @@ const showEditJobModal = (job) => {
             </Form.Item>
             <Form.Item label="Cron" name="cron">
               <Input />
+            </Form.Item>
+            <Form.Item label="Agent" name="agent">
+              <Select placeholder="Select an agent">
+                {agents.map((agent) => (
+                  <Select.Option key={agent.id} value={agent.id}>
+                    {agent.name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
             <Form.Item label="Number of Runs if Fails" name="numOfRunIfFails">
               <InputNumber min={0} max={9} style={{ width: "100%" }} />
@@ -251,13 +267,18 @@ const showEditJobModal = (job) => {
         </Modal>
       </>
       <>
-      <Modal
-      title="Edit Job"
-      visible={editJobModalVisible}
-      onCancel={handleEditJobModalCancel}
-      footer={null}
-    >
-      <Form ref={editJobFormRef} onFinish={onEditFinish} layout="vertical" initialValues={editJob}>
+        <Modal
+          title="Edit Job"
+          visible={editJobModalVisible}
+          onCancel={handleEditJobModalCancel}
+          footer={null}
+        >
+          <Form
+            ref={editJobFormRef}
+            onFinish={onEditFinish}
+            layout="vertical"
+            initialValues={editJob}
+          >
             <Form.Item label="Name" name="name">
               <Input />
             </Form.Item>
@@ -267,9 +288,19 @@ const showEditJobModal = (job) => {
             <Form.Item label="Cron" name="cron">
               <Input />
             </Form.Item>
+            <Form.Item label="Agent" name="agent">
+              <Select placeholder="Select an agent">
+                {agents.map((agent) => (
+                  <Select.Option key={agent.id} value={agent.id}>
+                    {agent.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
             <Form.Item label="Number of Runs if Fails" name="numOfRunIfFails">
               <InputNumber min={0} max={9} style={{ width: "100%" }} />
             </Form.Item>
+
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item

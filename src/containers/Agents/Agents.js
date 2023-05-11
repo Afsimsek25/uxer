@@ -1,47 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { Layout, Breadcrumb, Table, Input, Button } from "antd"; // Button ve Input burada import edildi
+import React, { useEffect } from "react";
+import { Layout, Breadcrumb, Table, Input, Button } from "antd";
 import HeaderComponent from "../../components/HeaderComponent";
-import axios from "axios";
 import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
-
+import { useDispatch, useSelector } from "react-redux";
+import { agentRequest } from '../../redux/actions/agentActions';
 
 const { Content } = Layout;
 const { Search } = Input;
-const usr = JSON.parse(localStorage.getItem('token'));
-
 
 const AgentsPage = () => {
-  const [agents, setAgents] = useState([]);
-  const [searchText, setSearchText] = useState("");
+  const dispatch = useDispatch();
+  const agents = useSelector(state => state.agentReducer.agents);
 
   useEffect(() => {
-    fetchAgents();
-  }, []);
-
-  const fetchAgents = async (search = "") => {
-    const result = await axios.post(
-      "https://gateway-test.u-xer.com/api/Agent/search",
-      {
-        searchText: search,
-        name: "",
-        description: "",
-      },
-      {
-        headers: {
-          accept: "*/*",
-          Authorization:
-          `Bearer ${usr.token.accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    setAgents(result.data);
-  };
+    dispatch(agentRequest({ searchText: "" }));
+  }, [dispatch]);
 
   const handleSearch = (value) => {
-    setSearchText(value);
-    fetchAgents(value);
+    dispatch(agentRequest({ searchText: value }));
   };
 
   const columns = [

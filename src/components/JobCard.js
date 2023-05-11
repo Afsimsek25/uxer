@@ -141,9 +141,6 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
                     <BsGlobe />
                   </span>
                 </div>
-                <div className="job-details-middle">
-                  <div>No Agents</div>
-                </div>
                 <div className="job-details-right">
                   <span className="job-detail-icon">
                     <AiFillPlayCircle style={{ color: "#4285F4" }} />
