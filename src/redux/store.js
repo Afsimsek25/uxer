@@ -6,7 +6,7 @@ import rootReducer from './reducers';
 import { watchLogin } from './sagas/loginSaga';
 import { watchRegister } from './sagas/registerSaga';
 import { watchAgentRequests } from './sagas/agentSaga';
-import { fetchJobs } from './sagas/jobSaga'; // Import jobSaga
+import rootSaga from './sagas'; // Import rootSaga
 
 // Saga Middleware
 const sagaMiddleware = createSagaMiddleware();
@@ -18,7 +18,4 @@ export const store = createStore(
 );
 
 // Run Sagas
-sagaMiddleware.run(watchLogin);
-sagaMiddleware.run(watchRegister);
-sagaMiddleware.run(watchAgentRequests);
-sagaMiddleware.run(fetchJobs); // Run jobSaga
+sagaMiddleware.run(rootSaga); // Run rootSaga

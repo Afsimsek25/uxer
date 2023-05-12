@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import "./JobCard.css";
 import { IoGitMergeOutline } from "react-icons/io5";
 import { IoMdMail } from "react-icons/io";
@@ -9,7 +9,6 @@ import {
   AiFillCloseCircle,
   AiOutlineClockCircle,
 } from "react-icons/ai";
-import axios from "axios";
 import { Popover, Menu, message } from "antd";
 import {
   MoreOutlined,
@@ -17,53 +16,36 @@ import {
   CopyOutlined,
   BarcodeOutlined,
 } from "@ant-design/icons";
-const usr = JSON.parse(localStorage.getItem("token"));
+import { deleteJob, duplicateJob } from "../redux/actions/jobActions";
+import { useDispatch,useSelector } from "react-redux";
 
-const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
+const JobCard = ({ onEditJob }) => {
+  const jobs = useSelector((state) => state.job.jobs);
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [visiblePopoverId, setVisiblePopoverId] = useState(null);
-  const [expandedStates, setExpandedStates] = useState(
-    Array(jobs.length).fill(false)
-  );
+  const dispatch = useDispatch();
+  const [expandedStates, setExpandedStates] = useState([]);
+
+  useEffect(() => {
+    if (jobs) {
+      setExpandedStates(Array(jobs.length).fill(false));
+    }
+  }, [jobs]);
+
   const handleToggle = (index) => {
     const newExpandedStates = [...expandedStates];
     newExpandedStates[index] = !newExpandedStates[index];
     setExpandedStates(newExpandedStates);
   };
-  const deleteJob = async (jobId) => {
-    try {
-      await axios.delete(`https://gateway-test.u-xer.com/api/Job/${jobId}`, {
-        headers: {
-          Accept: "*/*",
-          Authorization: `Bearer ${usr.token.accessToken}`,
-        },
-      });
-      // Call the onJobDeleted callback after successfully deleting the job
-      onJobDeleted();
-    } catch (error) {
-      console.error("Error deleting job:", error);
-    }
+
+  const handleDeleteJob = (jobId) => {
+    dispatch(deleteJob(jobId));
   };
-  const duplicateJob = async (jobId) => {
-    try {
-      await axios.put(
-        `https://gateway-test.u-xer.com/api/Job/duplicate/${jobId}`,
-        {},
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-          },
-        }
-      );
-      // Job is successfully duplicated
-      message.success("Job is successfully duplicated");
-      // Fetch the jobs again to reflect the changes
-      onJobDeleted(); // we are reusing this callback to fetch the jobs again
-    } catch (error) {
-      console.error("Error duplicating job:", error);
-    }
+
+  const handleDuplicateJob = async (jobId) => {
+    dispatch(duplicateJob(jobId));
   };
+
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
       function () {
@@ -74,6 +56,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
       }
     );
   };
+
   const handleVisibleChange = (visible, jobId) => {
     if (visible) {
       setVisiblePopoverId(jobId);
@@ -81,6 +64,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
       setVisiblePopoverId(null);
     }
   };
+
   const moreJobOptions = (job) => (
     <Menu>
       <Menu.Item
@@ -97,7 +81,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
         key="job_duplicate"
         icon={<CopyOutlined />}
         onClick={() => {
-          duplicateJob(job.id);
+          handleDuplicateJob(job.id);
           setPopoverVisible(false);
         }}
       >
@@ -112,7 +96,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
           setPopoverVisible(false);
         }}
       >
-        Coppy ID
+        Copy ID
       </Menu.Item>
     </Menu>
   );
@@ -133,7 +117,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
             {!isExpanded && (
               <div className="job-details">
                 <div className="job-details-left">
-                  <span>{job.tests.length} Tests</span>
+                  <span>{job.tests && job.tests.length} Tests</span>
                   <span
                     className="job-detail-icon"
                     style={{ marginLeft: "20px" }}
@@ -147,7 +131,7 @@ const JobCard = ({ jobs, onJobDeleted, onEditJob }) => {
                   </span>
                   <span
                     className="job-detail-icon"
-                    onClick={() => deleteJob(job.id)}
+                    onClick={() => handleDeleteJob(job.id)}
                   >
                     <AiFillCloseCircle
                       className="delete-icon"

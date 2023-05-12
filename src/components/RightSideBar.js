@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+
 import {
   Button,
   Layout,
@@ -26,13 +27,12 @@ import JobCard from "./JobCard";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { agentRequest } from "../redux/actions/agentActions";
-
+import { fetchJobs } from "../redux/actions/jobActions";
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
 
 const RightSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [jobs, setJobs] = useState([]);
   const publicProjectId = useSelector((state) => state.project.publicProjectId);
   const [newJobModalVisible, setNewJobModalVisible] = useState(false);
   const [editJobModalVisible, setEditJobModalVisible] = useState(false);
@@ -42,6 +42,11 @@ const RightSideBar = () => {
   const agents = useSelector(state => state.agent.agents);
   const newJobFormRef = useRef();
   const editJobFormRef = useRef();
+  const jobs = useSelector(state => state.job.jobs);
+
+  useEffect(() => {;
+    dispatch(fetchJobs(publicProjectId));
+  }, [dispatch]);
 
   const showNewJobModal = () => {
     if (newJobFormRef.current) {
@@ -67,27 +72,7 @@ const RightSideBar = () => {
     setSelectedJob(null);
     setEditJobModalVisible(false);
   };
-  const fetchJobs = async () => {
-    try {
-      const response = await axios.post(
-        "https://gateway-test.u-xer.com/api/Job/search",
-        {
-          projectId: publicProjectId,
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setJobs(response.data);
-      console.log("jab : ", response.data);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
-    }
-  };
+  
   const onFinish = async (values) => {
     try {
       await axios.post(
@@ -106,7 +91,7 @@ const RightSideBar = () => {
         }
       );
       handleNewJobModalCancel();
-      fetchJobs(); // Fetch jobs after creating the new job
+     dispatch(fetchJobs(publicProjectId)); // Fetch jobs after creating the new job
     } catch (error) {
       console.error("Error creating new job:", error);
     }
