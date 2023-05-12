@@ -23,6 +23,8 @@ import { HiOutlinePuzzle, HiOutlineDocumentDuplicate } from "react-icons/hi";
 import { IoAppsOutline } from "react-icons/io5";
 import { BsSliders } from "react-icons/bs";
 import { TiDelete, TiEdit } from "react-icons/ti";
+import { fetchJobs} from "../redux/actions/jobActions";
+
 
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
@@ -41,10 +43,7 @@ const LeftSideBar = () => {
   const [editingFolderId, setEditingFolderId] = useState(null);
   const [editedFolderName, setEditedFolderName] = useState("");
   const [hoveredFolderId, setHoveredFolderId] = useState(null);
-  const [collapsed, setCollapsed] = useState(false);
-  const publicProjectId = useSelector((state) => state.project.publicProjectId);
-  const dispatch = useDispatch(); // Bu satırı ekledik
-
+  const dispatch = useDispatch();
   const editInputRef = useRef();
   const searchInputRef = useRef();
 
@@ -179,6 +178,8 @@ const LeftSideBar = () => {
     setSelectedProject(project.name);
     setSelectedProjectId(project.id);
     dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: project.id });
+    dispatch(fetchJobs());
+    
   };
   function handleEditClick(folderId, folderName) {
     setIsEditing(true);
