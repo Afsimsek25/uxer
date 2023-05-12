@@ -14,6 +14,7 @@ import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerRequest } from "../../redux/actions/registerActions";
+import { routes } from "../../routesPath";
 
 
 const { Title } = Typography;
@@ -52,7 +53,7 @@ const Register = () => {
         description:
           "Kayıt işlemi başarıyla tamamlandı, giriş yapabilirsiniz.",
       });
-      navigate("/login");
+      navigate({routes:routes.login.path});
     }
     if (registerState.error) {
       setRegisterError(true);
@@ -170,7 +171,7 @@ const Register = () => {
             </Button>
           </Form.Item>
         </Form>
-        <Link to="/login">Giriş Yap</Link>
+        <Link to={routes.login.path}>{routes.login.title}</Link>
       </Col>
     </Row>
   );

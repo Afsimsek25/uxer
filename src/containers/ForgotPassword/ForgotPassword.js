@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Form, Input, Button, Row, Col, Typography } from "antd";
 import { MailOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { routes } from "../../routesPath";
 
 const { Title } = Typography;
 
@@ -53,7 +54,7 @@ const ForgotPassword = () => {
             </Button>
           </Form.Item>
         </Form>
-        <Link to="/login">Log In</Link>
+        <Link to={routes.login.path}>{routes.login.title}</Link>
       </Col>
     </Row>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate, useLocation, Outlet } from "react-router-dom";
 import Unauthorized from "../components/Unauthorized";
 import { useAuth } from "../provider/AuthProvider";
+import { routes } from "../routesPath";
 const Authorization = ({ permissions }) => {
   const { user } = useAuth();
   const location = useLocation();
@@ -12,6 +13,6 @@ const Authorization = ({ permissions }) => {
     );
     return isAllowed ? <Outlet /> : <Unauthorized />;
   }
-  return <Navigate to="/login" state={{ path: location.pathname }} replace />;
+  return <Navigate to={routes.login.path} state={{ path: location.pathname }} replace />;
 };
 export default Authorization;
