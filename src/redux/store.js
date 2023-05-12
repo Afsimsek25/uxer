@@ -1,31 +1,18 @@
-// src/redux/store.js
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import loginReducer from './reducers/loginReducer';
-import registerReducer from './reducers/registerReducer';
-import projectReducer from './reducers/projectReducer';
-
-import { agentReducer } from './reducers/agentReducer'; // With curly braces
+import rootReducer from './reducers'; // Root Reducer'ı buradan alın
 import { watchLogin } from './sagas/loginSaga';
 import { watchRegister } from './sagas/registerSaga';
-import { watchAgentRequests } from './sagas/agentSaga'; // Import your saga
-
-// Root Reducer
-const rootReducer = combineReducers({
-  login: loginReducer,
-  register: registerReducer,
-  project: projectReducer,
-  agentReducer: agentReducer,
-});
+import { watchAgentRequests } from './sagas/agentSaga';
 
 // Saga Middleware
 const sagaMiddleware = createSagaMiddleware();
 
 // Store
 export const store = createStore(
-  rootReducer,
+  rootReducer, // rootReducer'ı kullanın
   composeWithDevTools(applyMiddleware(sagaMiddleware))
 );
 

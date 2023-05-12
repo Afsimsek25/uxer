@@ -10,7 +10,8 @@ const { Search } = Input;
 
 const AgentsPage = () => {
   const dispatch = useDispatch();
-  const agents = useSelector(state => state.agentReducer.agents);
+  const agents = useSelector(state => state.agent.agents);
+
 
   useEffect(() => {
     dispatch(agentRequest({ searchText: "" }));

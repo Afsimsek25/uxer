@@ -39,7 +39,7 @@ const RightSideBar = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [editJob, setEditJob] = useState(null);
   const dispatch = useDispatch();
-  const agents = useSelector(state => state.agentReducer.agents);
+  const agents = useSelector(state => state.agent.agents);
   const newJobFormRef = useRef();
   const editJobFormRef = useRef();
 
