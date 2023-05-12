@@ -27,7 +27,7 @@ import JobCard from "./JobCard";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { agentRequest } from "../redux/actions/agentActions";
-import { fetchJobs } from "../redux/actions/jobActions";
+import { fetchJobs, addJob } from "../redux/actions/jobActions";
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
 
@@ -39,12 +39,12 @@ const RightSideBar = () => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [editJob, setEditJob] = useState(null);
   const dispatch = useDispatch();
-  const agents = useSelector(state => state.agent.agents);
+  const agents = useSelector((state) => state.agent.agents);
   const newJobFormRef = useRef();
   const editJobFormRef = useRef();
-  const jobs = useSelector(state => state.job.jobs);
+  const jobs = useSelector((state) => state.job.jobs);
 
-  useEffect(() => {;
+  useEffect(() => {
     dispatch(fetchJobs(publicProjectId));
   }, [dispatch]);
 
@@ -72,29 +72,11 @@ const RightSideBar = () => {
     setSelectedJob(null);
     setEditJobModalVisible(false);
   };
-  
+
   const onFinish = async (values) => {
-    try {
-      await axios.post(
-        "https://gateway-test.u-xer.com/api/Job",
-        {
-          ...values,
-          agentId: values.agent,
-          projectId: publicProjectId,
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      handleNewJobModalCancel();
-     dispatch(fetchJobs(publicProjectId)); // Fetch jobs after creating the new job
-    } catch (error) {
-      console.error("Error creating new job:", error);
-    }
+    const projectId = publicProjectId; // Varsayalım projectId burada tanımlanmış
+    dispatch(addJob({ ...values, projectId }));
+    handleNewJobModalCancel();
   };
   const onEditFinish = (values) => {
     const updatedJob = {

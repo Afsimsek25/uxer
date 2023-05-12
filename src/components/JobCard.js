@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState} from "react";
 import "./JobCard.css";
 import { IoGitMergeOutline } from "react-icons/io5";
 import { IoMdMail } from "react-icons/io";
@@ -25,27 +25,19 @@ const JobCard = ({ onEditJob }) => {
   const [visiblePopoverId, setVisiblePopoverId] = useState(null);
   const dispatch = useDispatch();
   const [expandedStates, setExpandedStates] = useState([]);
-
-  useEffect(() => {
-    if (jobs) {
-      setExpandedStates(Array(jobs.length).fill(false));
-    }
-  }, [jobs]);
+  const [loading, setLoading] = useState(true);
 
   const handleToggle = (index) => {
     const newExpandedStates = [...expandedStates];
     newExpandedStates[index] = !newExpandedStates[index];
     setExpandedStates(newExpandedStates);
   };
-
   const handleDeleteJob = (jobId) => {
     dispatch(deleteJob(jobId));
   };
-
   const handleDuplicateJob = async (jobId) => {
     dispatch(duplicateJob(jobId));
   };
-
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
       function () {
@@ -56,7 +48,6 @@ const JobCard = ({ onEditJob }) => {
       }
     );
   };
-
   const handleVisibleChange = (visible, jobId) => {
     if (visible) {
       setVisiblePopoverId(jobId);
@@ -64,7 +55,6 @@ const JobCard = ({ onEditJob }) => {
       setVisiblePopoverId(null);
     }
   };
-
   const moreJobOptions = (job) => (
     <Menu>
       <Menu.Item
@@ -100,12 +90,10 @@ const JobCard = ({ onEditJob }) => {
       </Menu.Item>
     </Menu>
   );
-
   return (
     <div>
       {jobs.map((job, index) => {
         const isExpanded = expandedStates[index];
-
         return (
           <div className="job-card" key={index}>
             <div
@@ -181,5 +169,4 @@ const JobCard = ({ onEditJob }) => {
     </div>
   );
 };
-
 export default JobCard;

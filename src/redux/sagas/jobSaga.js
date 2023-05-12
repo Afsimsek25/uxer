@@ -6,6 +6,8 @@ import {
   FETCH_JOBS_FAILED,
 
   ADD_JOB,
+  ADD_JOB_FAILED,
+  ADD_JOB_SUCCESS,
   DELETE_JOB,
   EDIT_JOB,
   DUPLICATE_JOB,
@@ -13,6 +15,8 @@ import {
   DUPLICATE_JOB_FAILED,
 } from "../actions/jobActions";
 import { message } from "antd";
+import { useSelector } from "react-redux";
+
 const usr = JSON.parse(localStorage.getItem("token"));
 const apiUrl = "https://gateway-test.u-xer.com/api/Job";
 
@@ -82,11 +86,40 @@ function* duplicateJobSaga(action) {
     console.error("Error duplicating job:", error);
   }
 }
+function* addJobSaga(action) {
+  const values = action.payload;
+  try {
+    const response = yield call(
+      axios.post,
+      "https://gateway-test.u-xer.com/api/Job",
+      {
+        ...values,
+        agentId: values.agent,
+      },
+      {
+        headers: {
+          Accept: "*/*",
+          Authorization: `Bearer ${usr.token.accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    yield put({ type: ADD_JOB_SUCCESS, payload: response.data }); // Ekleme işlemi başarılı olduğunda, sunucudan dönen işi eyleme ekleyin.
+    yield put({ type: FETCH_JOBS });
+    message.success("Job is successfully added");
+  } catch (error) {
+    yield put({ type: ADD_JOB_FAILED, message: error.message });
+    console.error("Error creating new job:", error);
+  }
+}
+
+
 
 
 // Then add this to your root saga
 export default function* jobSaga() {
   yield takeLatest(FETCH_JOBS, fetchJobs);
   yield takeLatest(DELETE_JOB, deleteJobSaga);
-  yield takeLatest(DUPLICATE_JOB, duplicateJobSaga); 
+  yield takeLatest(DUPLICATE_JOB, duplicateJobSaga);
+  yield takeLatest(ADD_JOB, addJobSaga);
 }
