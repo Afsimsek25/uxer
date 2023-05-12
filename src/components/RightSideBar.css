@@ -1,0 +1,39 @@
+.right-sidebar {
+  position: relative;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.trigger {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff;
+}
+.jobs-header {
+  padding-top: 8px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.new-job-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.new-job-button:hover {
+  background-color: #40a9ff;
+}

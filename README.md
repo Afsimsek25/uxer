@@ -44,3 +44,76 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+## Structure
+uxer
+├─ public
+│   ├─ favicon.ico
+│   ├─ index.html
+│   ├─ manifest.json
+│   ├─ robots.txt
+├─ src
+│   ├─ assets
+│   │   ├─ logo.png
+│   ├─ components
+│   │   ├─ routing
+│   │   ├─ table
+│   │   │   ├─ DataTable.css
+│   │   │   ├─ DataTable.js
+│   │   ├─ DataGrid.js
+│   │   ├─ HeaderComponent.js
+│   │   ├─ LeftSideBar.js
+│   │   ├─ RightSideBar.js
+│   ├─ containers
+│   │   ├─ Accounts
+│   │   │   ├─ Accounts.js
+│   │   ├─ Agents
+│   │   │   ├─ Agents.js
+│   │   ├─ ForgotPassword
+│   │   │   ├─ ForgotPassword.js
+│   │   ├─ HomePage
+│   │   │   ├─ HomePage.js
+│   │   ├─ LoginPage
+│   │   │   ├─ LoginPage.js
+│   │   ├─ Register
+│   │   │   ├─ RegisterPage.js
+│   ├─ permission
+│   │   ├─ Permission.js
+│   ├─ provider
+│   │   ├─ AuthProvider.js
+│   ├─ redux
+│   │   ├─ actions
+│   │   │   ├─ agentActions.js
+│   │   │   ├─ jobActions.js
+│   │   │   ├─ loginActions.js
+│   │   │   ├─ RegisterActions.js
+│   │   ├─ reducers
+│   │   │   ├─ agentReducer.js
+│   │   │   ├─ index.js
+│   │   │   ├─ jobReducer.js
+│   │   │   ├─ loginReducer.js
+│   │   │   ├─ projectReducer.js
+│   │   │   ├─ registerReducer.js
+│   │   ├─ sagas
+│   │   │   ├─ agentSaga.js
+│   │   │   ├─ apiSaga.js
+│   │   │   ├─ index.js
+│   │   │   ├─ jobSaga.js
+│   │   │   ├─ loginSaga.js
+│   │   │   ├─ registerSaga.js
+│   │   ├─ store.js
+│   ├─ routes
+│   │   ├─ Authentications.js
+│   │   ├─ Authorization.js
+│   │   ├─ index.js
+│   ├─ utils
+│   │   ├─ service.js
+│   │   ├─ Util.js
+│   ├─ App.css
+│   ├─ App.js
+│   ├─ index.css
+│   ├─ index.js
+├─ .gitignore
+├─ package.json
+├─ tsconfig.json
