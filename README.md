@@ -84,14 +84,22 @@ uxer
 │   │   ├─ AuthProvider.js
 │   ├─ redux
 │   │   ├─ actions
+│   │   │   ├─ agentActions.js
+│   │   │   ├─ jobActions.js
 │   │   │   ├─ loginActions.js
 │   │   │   ├─ RegisterActions.js
 │   │   ├─ reducers
+│   │   │   ├─ agentReducer.js
 │   │   │   ├─ index.js
-│   │   │   ├─ LoginReducer.js
+│   │   │   ├─ jobReducer.js
+│   │   │   ├─ loginReducer.js
+│   │   │   ├─ projectReducer.js
 │   │   │   ├─ registerReducer.js
 │   │   ├─ sagas
+│   │   │   ├─ agentSaga.js
+│   │   │   ├─ apiSaga.js
 │   │   │   ├─ index.js
+│   │   │   ├─ jobSaga.js
 │   │   │   ├─ loginSaga.js
 │   │   │   ├─ registerSaga.js
 │   │   ├─ store.js
