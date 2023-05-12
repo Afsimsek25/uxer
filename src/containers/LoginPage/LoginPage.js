@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { LOGIN_REQUEST, loginRequest } from '../../redux/actions/loginActions';
 import { useSelector } from "react-redux";
 import { useAuth } from '../../provider/AuthProvider';
+import { routes } from '../../routesPath';
 
 
 
@@ -16,9 +17,9 @@ const LoginPage=() => {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const { login } = useAuth();
-
   const dispatch = useDispatch();
   const loginState = useSelector((state) => state.login);
+  
 
   const onFinish = (values) => {
     dispatch(loginRequest(values.username, values.password));
@@ -29,14 +30,16 @@ const LoginPage=() => {
   useEffect(() => {
     if (loginState.data) {
       login(loginState.data)
-      navigate("/homepage"); 
+      navigate({routes:routes.homepage.path}); 
     }
     if (loginState.error) {
       setLoginError(true);
     }
   }, [loginState, navigate]);
   
+
   return (
+  <>
     <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <Col xs={24} sm={12} md={8} lg={6}>
         <Title level={2}>Log in</Title>
@@ -95,11 +98,12 @@ const LoginPage=() => {
           </Form.Item>
         </Form>
         <Space>
-          <Link to="/forgot-password">Forgot Password</Link>
-          <Link to="/register">Register</Link>
+          <Link to={routes.forgotPassword.path}>{routes.forgotPassword.title}</Link>
+          <Link to={routes.register.path}>{routes.register.title}</Link>
         </Space>
       </Col>
     </Row>
+    </>
   );
 };
 

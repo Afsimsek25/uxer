@@ -1,0 +1,39 @@
+export const routes ={
+    login:{
+        path:"/login",
+        title:"Login",
+    },
+    register:{
+        path:"/register",
+        title:"Register",
+    },
+    forgotPassword:{
+        path:"/forgot-password",
+        title:"Forgot Password",
+    },
+    homepage:{
+        path:"/homepage",
+        title:"Homepage",
+        titleTwo:"Projects"
+    },
+    agents:{
+        path:"/agents",
+        title:"Agents",
+    },
+    settings:{
+        path:"/settings",
+        title:"Settings",
+    },
+    accounts:{
+        path:"/accounts",
+        title:"Accounts",
+    },
+    agents:{
+        path:"/agents",
+        title:"Agents",
+    },
+    profile:{
+        path:"/profile",
+        title:"Profile",
+    },
+}
