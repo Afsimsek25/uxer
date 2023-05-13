@@ -102,10 +102,8 @@ const api = {
 };
 
 function* listFolderSaga(action) {
-  console.log("list : ", action.payload);
   try {
     const folderData = yield call(api.listFolders, action.payload);
-    console.log('folder data :',folderData);
     yield put({ type: LIST_FOLDER_SUCCESS, payload: folderData });
   } catch (error) {
     yield put({ type: LIST_FOLDER_FAILED, payload: error.message });

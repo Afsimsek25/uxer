@@ -18,8 +18,8 @@ const HomePage = () => {
         <Sider>
           <LeftSideBar />
         </Sider>
-        <Content>
-       
+        <Content style={{ padding: '0 50px', margin: '24px 160px 0', overflow: 'initial', width: '0px', height: '0px' }}>
+          <TestTable />
         </Content>
         <Sider>
           <RightSidebar />

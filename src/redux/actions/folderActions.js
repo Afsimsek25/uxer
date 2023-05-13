@@ -16,6 +16,12 @@ export const DELETE_FOLDER = "DELETE_FOLDER";
 export const DELETE_FOLDER_SUCCESS = "DELETE_FOLDER_SUCCESS";
 export const DELETE_FOLDER_FAILED = "DELETE_FOLDER_FAILED";
 
+export const SELECTED_FOLDER_ID = "SELECTED_FOLDER_ID";
+
+export const selectedFolder = (folderId) => ({
+  type: SELECTED_FOLDER_ID,
+  payload: folderId,
+});
 export const listFolder = (id) => ({
   type: LIST_FOLDER,
   payload: id,

@@ -54,7 +54,6 @@ const LeftSideBar = () => {
   useEffect(() => {
     if (selectedProjectId) {
       dispatch(listFolder(selectedProjectId));
-      console.log(" after dipatch first folders", folders);
     } else {
       fetchProjects().then((fetchedProjects) => {
         if (fetchedProjects && fetchedProjects.length > 0) {
@@ -302,6 +301,9 @@ const LeftSideBar = () => {
       console.error("Error response data:", error.response.data);
     }
   };
+  const handleSelectedFolder = async (folderId) => {
+    dispatch({ type: "SELECTED_FOLDER_ID", payload: folderId });
+  }
   const projectMenu = (
     <Menu
       style={{
@@ -453,6 +455,7 @@ const LeftSideBar = () => {
                 icon={<FolderOutlined />}
                 onMouseEnter={() => setHoveredFolderId(folder.id)}
                 onMouseLeave={() => setHoveredFolderId(null)}
+                onClick={() => handleSelectedFolder(folder.id)}
               >
                 <div
                   style={{

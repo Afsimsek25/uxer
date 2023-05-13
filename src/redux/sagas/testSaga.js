@@ -16,18 +16,29 @@ import {
   DUPLICATE_TEST_SUCCESS,
   DUPLICATE_TEST_FAILED,
 } from "../actions/testActions";
+import axios from "axios";
+
+const usr = JSON.parse(localStorage.getItem("token"));
+const apiUrl = "https://gateway-test.u-xer.com/api/Job";
+
 const api = {
-  listTest: async (id) => {
-    // Simulating an asynchronous API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const testData = [
-          { id: 1, name: "Test 1" },
-          { id: 2, name: "Test 2" },
-        ];
-        resolve(testData);
-      }, 1000);
-    });
+  listTest: async (reqDetails) => {
+    try {
+      const response = await axios.post(
+        "https://gateway-test.u-xer.com/api/Test/search",
+        reqDetails,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
   addTest: async (testData) => {
     // Simulating an asynchronous API call
@@ -68,7 +79,6 @@ const api = {
 
 function* listTestSaga(action) {
   try {
-    // Call the API to fetch the test data
     const testData = yield api.listTest(action.payload);
     yield put({ type: LIST_TEST_SUCCESS, payload: testData });
   } catch (error) {
