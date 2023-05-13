@@ -19,8 +19,9 @@ export const DUPLICATE_JOB_SUCCESS = "DUPLICATE_JOB_SUCCESS";
 export const DUPLICATE_JOB_FAILED = "DUPLICATE_JOB_FAILED";
 
 // actions for fetchJobs
-export const fetchJobs = () => ({
+export const fetchJobs = (id) => ({
   type: FETCH_JOBS,
+  payload: id,
 });
 export const fetchJobsSuccess = (jobs) => ({
   type: FETCH_JOBS_SUCCESS,
@@ -74,8 +75,7 @@ export const editJobFailed = (error) => ({
 });
 
 // actions for duplicateJob
-  console.log("duplicateJobSaga is called");
-  export const duplicateJob = (jobId) => ({
+export const duplicateJob = (jobId) => ({
   type: DUPLICATE_JOB,
   payload: jobId,
 });

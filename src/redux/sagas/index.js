@@ -3,7 +3,9 @@ import { all, fork } from "redux-saga/effects";
 import { watchLogin } from "./loginSaga";
 import { watchRegister } from "./registerSaga";
 import { watchAgentRequests } from './agentSaga';
-import jobSaga from './jobSaga'; // Import jobSaga
+import jobSaga from './jobSaga';
+import testSaga from './testSaga';
+import folderSaga from './folderSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -11,5 +13,7 @@ export default function* rootSaga() {
     fork(watchRegister),
     fork(watchAgentRequests),
     fork(jobSaga),
+    fork(testSaga),
+    fork(folderSaga),
   ]);
 }

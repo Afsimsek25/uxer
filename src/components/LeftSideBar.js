@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { Layout, Menu, Button, Input, Dropdown, Modal, Popover } from "antd";
 import useOutsideClick from "./useOutsideClick";
 import {
@@ -14,24 +14,27 @@ import {
   CopyOutlined,
   TeamOutlined,
   PieChartOutlined,
-  LeftOutlined,
-  ProjectOutlined
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
-import { HiOutlinePuzzle, HiOutlineDocumentDuplicate } from "react-icons/hi";
+import { HiOutlinePuzzle } from "react-icons/hi";
 import { IoAppsOutline } from "react-icons/io5";
 import { BsSliders } from "react-icons/bs";
 import { TiDelete, TiEdit } from "react-icons/ti";
-import { fetchJobs} from "../redux/actions/jobActions";
-
+import { useSelector } from "react-redux";
+import {
+  addFolder,
+  editFolder,
+  listFolder,
+  deleteFolder,
+} from "../redux/actions/folderActions";
 
 const { Sider } = Layout;
 const usr = JSON.parse(localStorage.getItem("token"));
 
 const LeftSideBar = () => {
   const onClick = (e) => {};
-  const [folders, setFolders] = useState([]);
+
   const [searchText, setSearchText] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [selectedProject, setSelectedProject] = useState();
@@ -46,23 +49,28 @@ const LeftSideBar = () => {
   const dispatch = useDispatch();
   const editInputRef = useRef();
   const searchInputRef = useRef();
+  const folders = useSelector((state) => state.folder.folders);
 
   useEffect(() => {
     if (selectedProjectId) {
-      fetchFolders(selectedProjectId);
+      dispatch(listFolder(selectedProjectId));
     } else {
       fetchProjects().then((fetchedProjects) => {
         if (fetchedProjects && fetchedProjects.length > 0) {
           setSelectedProject(fetchedProjects[0].name);
           setSelectedProjectId(fetchedProjects[0].id);
-          dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: fetchedProjects[0].id });
-
+          dispatch({
+            type: "UPDATE_PUBLIC_PROJECT_ID",
+            payload: fetchedProjects[0].id,
+          });
         }
       });
     }
-    
   }, [selectedProjectId]);
-
+  const filteredFolders = folders.filter((folder) =>
+    //folder.name.toLowerCase().includes(searchText.toLowerCase())
+    true
+  );
   const fetchProjects = async () => {
     try {
       const response = await axios.post(
@@ -77,7 +85,6 @@ const LeftSideBar = () => {
         }
       );
       setProjects(response.data);
-      console.log(response.data);
       return response.data; // Bu satırı ekleyin, projeleri döndürün
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -85,29 +92,7 @@ const LeftSideBar = () => {
     }
   };
   const fetchFolders = async (projectId) => {
-    try {
-      const response = await axios.post(
-        "https://gateway-test.u-xer.com/api/Folder/search",
-        {
-          projectId: projectId,
-          asTree: true,
-          includeChildren: true,
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setFolders(response.data);
-      console.log(response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching folders:", error);
-      console.error("Error response data:", error.response.data);
-    }
+    dispatch(listFolder(projectId));
   };
   const handleSearch = (value) => {
     setSearchText(value);
@@ -119,94 +104,32 @@ const LeftSideBar = () => {
     setIsModalVisible(true);
   };
   const handleUpdateFolder = async (folderId, newName) => {
-    try {
-      const response = await axios.put(
-        `https://gateway-test.u-xer.com/api/Folder/${folderId}`,
-        {
-          name: newName,
-          description: "",
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      // Fetch folders again to update the list
-      fetchFolders(selectedProjectId);
-    } catch (error) {
-      console.error("Error updating folder:", error);
-      console.error("Error response data:", error.response.data);
-    }
+    dispatch(editFolder(folderId, newName, selectedProjectId));
   };
   const handleModalOk = async () => {
-    try {
-      const response = await axios.post(
-        "https://gateway-test.u-xer.com/api/Folder",
-        {
-          name: newFolderName,
-          description: "",
-          projectId: selectedProjectId,
-        },
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setNewFolderName("");
-      setIsModalVisible(false);
-
-      // Fetch folders again to update the list
-      fetchFolders(selectedProjectId).then((newFolders) => {
-        setFolders(newFolders);
-      });
-    } catch (error) {
-      console.error("Error creating folder:", error);
-      console.error("Error response data:", error.response.data);
-    }
+    const data = {
+      name: newFolderName,
+      description: "",
+      projectId: selectedProjectId,
+    };
+    dispatch(addFolder(data));
+    fetchFolders(selectedProjectId);
+    setIsModalVisible(false);
   };
-  const filteredFolders = folders.filter((folder) =>
-    folder.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const handleDeleteClick = async (folderId) => {
+    dispatch(deleteFolder(folderId));
+    fetchFolders(selectedProjectId);
+  };
   const handleProjectClick = (project) => {
     setSelectedProject(project.name);
     setSelectedProjectId(project.id);
-    dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: project.id });
-    dispatch(fetchJobs());
-    
+    dispatch({ type: "UPDATE_PUBLIC_PROJECT_ID", payload: project.id });
   };
   function handleEditClick(folderId, folderName) {
     setIsEditing(true);
     setEditingFolderId(folderId);
     setEditedFolderName(folderName);
   }
-  const handleDeleteClick = async (folderId) => {
-    try {
-      await axios.delete(
-        `https://gateway-test.u-xer.com/api/Folder/${folderId}`,
-        {
-          headers: {
-            Accept: "*/*",
-            Authorization: `Bearer ${usr.token.accessToken}`,
-          },
-        }
-      );
-
-      // Fetch folders again to update the list
-      fetchFolders(selectedProjectId).then((newFolders) => {
-        setFolders(newFolders);
-      });
-    } catch (error) {
-      console.error("Error deleting folder:", error);
-      console.error("Error response data:", error.response.data);
-    }
-  };
 
   ///////////////// Projects ///////////////////
   const [isProjectInputVisible, setIsProjectInputVisible] = useState(false);
@@ -378,6 +301,9 @@ const LeftSideBar = () => {
       console.error("Error response data:", error.response.data);
     }
   };
+  const handleSelectedFolder = async (folderId) => {
+    dispatch({ type: "SELECTED_FOLDER_ID", payload: folderId });
+  }
   const projectMenu = (
     <Menu
       style={{
@@ -423,13 +349,13 @@ const LeftSideBar = () => {
             {hoveredProjectId === project.id &&
               editingProjectId !== project.id && (
                 <span>
-                 <Popover
+                  <Popover
                     content={moreProjectOptions(project)}
                     trigger="click"
                     placement="bottom"
                     overlayStyle={{ zIndex: 1050 }}
                     onClick={(e) => e.stopPropagation()}
-                  > 
+                  >
                     <MoreOutlined />
                   </Popover>
                 </span>
@@ -454,7 +380,7 @@ const LeftSideBar = () => {
   return (
     <>
       <Sider
-          style={{
+        style={{
           height: "100vh",
           position: "fixed",
           left: 0,
@@ -481,7 +407,7 @@ const LeftSideBar = () => {
                   justifyContent: "space-between",
                   cursor: "pointer",
                 }}
-              > 
+              >
                 <span>{selectedProject}</span>
                 <DownOutlined />
               </div>
@@ -493,7 +419,6 @@ const LeftSideBar = () => {
             icon={<FolderOutlined />}
             title="Tests & Jobs"
           >
-            
             <div
               style={{
                 display: "flex",
@@ -530,6 +455,7 @@ const LeftSideBar = () => {
                 icon={<FolderOutlined />}
                 onMouseEnter={() => setHoveredFolderId(folder.id)}
                 onMouseLeave={() => setHoveredFolderId(null)}
+                onClick={() => handleSelectedFolder(folder.id)}
               >
                 <div
                   style={{

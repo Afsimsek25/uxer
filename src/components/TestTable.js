@@ -1,61 +1,61 @@
-import React from 'react';
-import { Divider, Radio, Table } from 'antd';
-import { useState } from 'react';
+import React, { useEffect } from "react";
+import { Divider, Radio, Table } from "antd";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { listTest } from "../redux/actions/testActions";
+
 const columns = [
   {
-    title: 'Name',
-    dataIndex: 'name',
+    title: "Name",
+    dataIndex: "name",
     render: (text) => <a>{text}</a>,
   },
   {
-    title: 'Age',
-    dataIndex: 'age',
+    title: "Age",
+    dataIndex: "age",
   },
   {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-  },
-  {
-    key: '4',
-    name: 'Disabled User',
-    age: 99,
-    address: 'Sydney No. 1 Lake Park',
+    title: "Address",
+    dataIndex: "address",
   },
 ];
 
-// rowSelection object indicates the need for row selection
 const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
+  onChange: (selectedRowKeys, selectedRows) => {},
   getCheckboxProps: (record) => ({
-    disabled: record.name === 'Disabled User',
-    // Column configuration not to be checked
+    disabled: record.name === "Disabled User",
     name: record.name,
   }),
 };
 const App = () => {
-  const [selectionType, setSelectionType] = useState('checkbox');
+  const selectedFolderId = useSelector(
+    (state) => state.folder.selectedFolderId
+  );
+  const state = useSelector((state) => state);
+  const stateTestData = useSelector((state) => state.test.tests);
+  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    if (selectedFolderId){
+      const reqDetails = {
+      includeFolder: true,
+      includeJobs: true,
+      includeExecutions: true,
+      folderId: selectedFolderId,
+    };
+    dispatch(listTest(reqDetails));
+    }
+    
+  }, [selectedFolderId]);
+  useEffect(() => {
+    if (stateTestData){
+      setData(stateTestData);
+    }
+  }, [stateTestData]);
+
+  const [selectionType, setSelectionType] = useState("checkbox");
   return (
     <div>
       <Table
