@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import {
   Button,
   Layout,
-  Menu,
   Space,
   Modal,
   Form,
@@ -13,6 +11,7 @@ import {
   Row,
   Col,
   Select,
+  message,
 } from "antd";
 import {
   RightOutlined,
@@ -25,12 +24,13 @@ import {
 import "./RightSideBar.css";
 import JobCard from "./JobCard";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { agentRequest } from "../redux/actions/agentActions";
-import { fetchJobs, addJob } from "../redux/actions/jobActions";
-const { Sider } = Layout;
-const usr = JSON.parse(localStorage.getItem("token"));
+import {
+  addJob,
+  editJob as editJobAction,
+} from "../redux/actions/jobActions";
 
+const { Sider } = Layout;
 const RightSideBar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const publicProjectId = useSelector((state) => state.project.publicProjectId);
@@ -42,10 +42,9 @@ const RightSideBar = () => {
   const agents = useSelector((state) => state.agent.agents);
   const newJobFormRef = useRef();
   const editJobFormRef = useRef();
-  const jobs = useSelector((state) => state.job.jobs);
 
   useEffect(() => {
-    dispatch(fetchJobs(publicProjectId));
+    dispatch(agentRequest(""));
   }, [dispatch]);
 
   const showNewJobModal = () => {
@@ -62,7 +61,10 @@ const RightSideBar = () => {
     setEditJobModalVisible(true);
     // Form fields reset after setting the modal visible.
     if (editJobFormRef.current) {
-      editJobFormRef.current.setFieldsValue(job);
+      editJobFormRef.current.setFieldsValue({
+        ...job,
+        agent: job.agentId,
+      });
     }
   };
   const handleNewJobModalCancel = () => {
@@ -72,11 +74,11 @@ const RightSideBar = () => {
     setSelectedJob(null);
     setEditJobModalVisible(false);
   };
-
   const onFinish = async (values) => {
-    const projectId = publicProjectId; // Varsayalım projectId burada tanımlanmış
+    const projectId = publicProjectId;
     dispatch(addJob({ ...values, projectId }));
     handleNewJobModalCancel();
+    message.success("Job is successfully added.");
   };
   const onEditFinish = (values) => {
     const updatedJob = {
@@ -84,39 +86,15 @@ const RightSideBar = () => {
       ...values,
       agentId: values.agent,
     };
-
-    axios
-      .put(`https://gateway-test.u-xer.com/api/Job/${editJob.id}`, updatedJob, {
-        headers: {
-          accept: "*/*",
-          Authorization: `Bearer ${usr.token.accessToken}`,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        setEditJobModalVisible(false);
-        fetchJobs();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    dispatch(editJobAction({updatedJob,publicProjectId}));
+    handleEditJobModalCancel();
+    message.success("Job is successfully edited.");
   };
 
-  const handleJobDeleted = () => {
-    fetchJobs();
-  };
-  useEffect(() => {
-    if (publicProjectId) {
-      fetchJobs();
-    }
-  }, [publicProjectId]);
-  useEffect(() => {
-    dispatch(agentRequest(""));
-  }, [dispatch]);
+  
   const handleCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
-
   return (
     <Sider
       className="right-sidebar"
@@ -170,8 +148,7 @@ const RightSideBar = () => {
           </div>
           <div style={{ clear: "both" }}></div>
           <JobCard
-            jobs={jobs}
-            onJobDeleted={handleJobDeleted}
+            jobs
             onEditJob={showEditJobModal}
           />
         </div>
@@ -256,7 +233,10 @@ const RightSideBar = () => {
               <Input />
             </Form.Item>
             <Form.Item label="Agent" name="agent">
-              <Select placeholder="Select an agent">
+              <Select
+                placeholder="Select an agent"
+                defaultValue={editJob?.agent?.id}
+              >
                 {agents.map((agent) => (
                   <Select.Option key={agent.id} value={agent.id}>
                     {agent.name}
@@ -264,6 +244,7 @@ const RightSideBar = () => {
                 ))}
               </Select>
             </Form.Item>
+
             <Form.Item label="Number of Runs if Fails" name="numOfRunIfFails">
               <InputNumber min={0} max={9} style={{ width: "100%" }} />
             </Form.Item>

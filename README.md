@@ -78,6 +78,8 @@ uxer
 │   │   │   ├─ LoginPage.js
 │   │   ├─ Register
 │   │   │   ├─ RegisterPage.js
+│   │   ├─ Settings
+│   │   │   ├─ Settings.js
 │   ├─ permission
 │   │   ├─ Permission.js
 │   ├─ provider
@@ -97,7 +99,6 @@ uxer
 │   │   │   ├─ registerReducer.js
 │   │   ├─ sagas
 │   │   │   ├─ agentSaga.js
-│   │   │   ├─ apiSaga.js
 │   │   │   ├─ index.js
 │   │   │   ├─ jobSaga.js
 │   │   │   ├─ loginSaga.js

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from 'react-redux';
+import {useDispatch } from 'react-redux';
 import { Layout, Menu, Button, Input, Dropdown, Modal, Popover } from "antd";
 import useOutsideClick from "./useOutsideClick";
 import {
@@ -14,16 +14,14 @@ import {
   CopyOutlined,
   TeamOutlined,
   PieChartOutlined,
-  LeftOutlined,
-  ProjectOutlined
 } from "@ant-design/icons";
 import axios from "axios";
 import { FiDatabase } from "react-icons/fi";
-import { HiOutlinePuzzle, HiOutlineDocumentDuplicate } from "react-icons/hi";
+import { HiOutlinePuzzle } from "react-icons/hi";
 import { IoAppsOutline } from "react-icons/io5";
 import { BsSliders } from "react-icons/bs";
 import { TiDelete, TiEdit } from "react-icons/ti";
-import { fetchJobs} from "../redux/actions/jobActions";
+import { useSelector } from "react-redux";
 
 
 const { Sider } = Layout;
@@ -46,6 +44,7 @@ const LeftSideBar = () => {
   const dispatch = useDispatch();
   const editInputRef = useRef();
   const searchInputRef = useRef();
+  const publicProjectId = useSelector((state) => state);
 
   useEffect(() => {
     if (selectedProjectId) {
@@ -77,7 +76,6 @@ const LeftSideBar = () => {
         }
       );
       setProjects(response.data);
-      console.log(response.data);
       return response.data; // Bu satırı ekleyin, projeleri döndürün
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -102,7 +100,6 @@ const LeftSideBar = () => {
         }
       );
       setFolders(response.data);
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -178,8 +175,6 @@ const LeftSideBar = () => {
     setSelectedProject(project.name);
     setSelectedProjectId(project.id);
     dispatch({ type: 'UPDATE_PUBLIC_PROJECT_ID', payload: project.id });
-    dispatch(fetchJobs());
-    
   };
   function handleEditClick(folderId, folderName) {
     setIsEditing(true);

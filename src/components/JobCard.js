@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState,useEffect} from "react";
 import "./JobCard.css";
 import { IoGitMergeOutline } from "react-icons/io5";
 import { IoMdMail } from "react-icons/io";
@@ -18,14 +18,21 @@ import {
 } from "@ant-design/icons";
 import { deleteJob, duplicateJob } from "../redux/actions/jobActions";
 import { useDispatch,useSelector } from "react-redux";
+import {
+  fetchJobs,
+} from "../redux/actions/jobActions";
 
-const JobCard = ({ onEditJob }) => {
-  const jobs = useSelector((state) => state.job.jobs);
+const JobCard = ({onEditJob }) => {
   const [popoverVisible, setPopoverVisible] = useState(false);
   const [visiblePopoverId, setVisiblePopoverId] = useState(null);
   const dispatch = useDispatch();
   const [expandedStates, setExpandedStates] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const publicProjectId = useSelector((state) => state.project.publicProjectId);
+  const jobs = useSelector((state) => state.job.jobs);
+
+  useEffect(() => {
+    dispatch(fetchJobs(publicProjectId));
+  }, [publicProjectId]);
 
   const handleToggle = (index) => {
     const newExpandedStates = [...expandedStates];
@@ -33,15 +40,16 @@ const JobCard = ({ onEditJob }) => {
     setExpandedStates(newExpandedStates);
   };
   const handleDeleteJob = (jobId) => {
-    dispatch(deleteJob(jobId));
+    dispatch(deleteJob({jobId,publicProjectId}));
+    message.success("Job is successfully deleted");
   };
   const handleDuplicateJob = async (jobId) => {
-    dispatch(duplicateJob(jobId));
+    dispatch(duplicateJob({jobId,publicProjectId}));
+    message.success("Job is successfully duplicated");
   };
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
       function () {
-        console.log("Copying to clipboard was successful!");
       },
       function (err) {
         console.error("Could not copy text: ", err);

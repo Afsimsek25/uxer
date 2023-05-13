@@ -4,23 +4,24 @@ import {
   FETCH_JOBS,
   FETCH_JOBS_SUCCESS,
   FETCH_JOBS_FAILED,
-
   ADD_JOB,
   ADD_JOB_FAILED,
   ADD_JOB_SUCCESS,
   DELETE_JOB,
+  DELETE_JOB_SUCCESS,
+  DELETE_JOB_FAILED,
   EDIT_JOB,
+  EDIT_JOB_SUCCESS,
+  EDIT_JOB_FAILED,
   DUPLICATE_JOB,
   DUPLICATE_JOB_SUCCESS,
   DUPLICATE_JOB_FAILED,
 } from "../actions/jobActions";
-import { message } from "antd";
-import { useSelector } from "react-redux";
 
 const usr = JSON.parse(localStorage.getItem("token"));
 const apiUrl = "https://gateway-test.u-xer.com/api/Job";
 
-function* fetchJobs(action) {
+function* fetchJobsSaga(action) {
   try {
     const response = yield call(
       axios.post,
@@ -36,17 +37,16 @@ function* fetchJobs(action) {
         },
       }
     );
-    yield put({ type: `${FETCH_JOBS_SUCCESS}`, payload: response.data });
-  } catch (e) {
-    yield put({ type: `${FETCH_JOBS_FAILED}`, message: e.message });
+    yield put({ type: FETCH_JOBS_SUCCESS, payload: response.data });
+  } catch (error) {
+    yield put({ type: FETCH_JOBS_FAILED, payload: error.message });
   }
 }
 function* deleteJobSaga(action) {
-  console.log("deleteJobSaga is called");
   try {
     const response = yield call(
       axios.delete,
-      `${apiUrl}/${action.payload}`,
+      `${apiUrl}/${action.payload.jobId}`,
       {
         headers: {
           Accept: "*/*",
@@ -56,20 +56,17 @@ function* deleteJobSaga(action) {
     );
 
     // After successful deletion, dispatch a success action
-    yield put({ type: `${DELETE_JOB}_SUCCESS`, payload: response.data });
-    yield put({ type: FETCH_JOBS });
-    message.success("Job is successfully deleted");
+    yield put({ type: `${DELETE_JOB_SUCCESS}`, payload: response.data });
+    yield fetchJobsSaga(action.payload.publicProjectId);
   } catch (error) {
-    // If there's an error, dispatch a failure action
-    yield put({ type: `${DELETE_JOB}_FAILURE`, message: error.message });
+    yield put({ type: `${DELETE_JOB_FAILED}`, message: error.message });
   }
 }
 function* duplicateJobSaga(action) {
-  console.log("duplicateJobSaga is called");
   try {
     yield call(
       axios.put,
-      `https://gateway-test.u-xer.com/api/Job/${action.payload}/duplicate`,
+      `https://gateway-test.u-xer.com/api/Job/${action.payload.jobId}/duplicate`,
       {},
       {
         headers: {
@@ -79,8 +76,7 @@ function* duplicateJobSaga(action) {
       }
     );
     yield put({ type: `${DUPLICATE_JOB_SUCCESS}` });
-    yield put({ type: FETCH_JOBS });
-    message.success("Job is successfully duplicated");
+    yield fetchJobsSaga(action.payload.publicProjectId);
   } catch (error) {
     yield put({ type: `${DUPLICATE_JOB_FAILED}`, message: error.message });
     console.error("Error duplicating job:", error);
@@ -104,22 +100,46 @@ function* addJobSaga(action) {
         },
       }
     );
-    yield put({ type: ADD_JOB_SUCCESS, payload: response.data }); // Ekleme işlemi başarılı olduğunda, sunucudan dönen işi eyleme ekleyin.
-    yield put({ type: FETCH_JOBS });
-    message.success("Job is successfully added");
+    yield put({ type: ADD_JOB_SUCCESS, payload: response.data });
+    yield fetchJobsSaga(action.payload.projectId);
   } catch (error) {
     yield put({ type: ADD_JOB_FAILED, message: error.message });
     console.error("Error creating new job:", error);
   }
 }
-
+function* editJobSaga(action) {
+  const values = action.payload.updatedJob;
+  try {
+    const response = yield call(
+      axios.put,
+      `https://gateway-test.u-xer.com/api/Job/${values.id}`,
+      {
+        ...values,
+        agentId: values.agent,
+      },
+      {
+        headers: {
+          Accept: "*/*",
+          Authorization: `Bearer ${usr.token.accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    yield put({ type: EDIT_JOB_SUCCESS, payload: response.data });
+    yield fetchJobsSaga(action.payload.publicProjectId);
+  } catch (error) {
+    yield put({ type: EDIT_JOB_FAILED, message: error.message });
+    console.error("Error editing job:", error);
+  }
+}
 
 
 
 // Then add this to your root saga
 export default function* jobSaga() {
-  yield takeLatest(FETCH_JOBS, fetchJobs);
+  yield takeLatest(FETCH_JOBS, fetchJobsSaga);
   yield takeLatest(DELETE_JOB, deleteJobSaga);
   yield takeLatest(DUPLICATE_JOB, duplicateJobSaga);
   yield takeLatest(ADD_JOB, addJobSaga);
+  yield takeLatest(EDIT_JOB, editJobSaga);
 }

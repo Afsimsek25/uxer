@@ -10,7 +10,6 @@ import {
 
 const usr = JSON.parse(localStorage.getItem("token"));
 function* fetchAgents(action) {
-  console.log("fetchAgents is called");
   try {
     const response = yield call(
       axios.post,
