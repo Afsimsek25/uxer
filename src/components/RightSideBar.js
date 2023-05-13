@@ -78,7 +78,6 @@ const RightSideBar = () => {
     const projectId = publicProjectId;
     dispatch(addJob({ ...values, projectId }));
     handleNewJobModalCancel();
-    message.success("Job is successfully added.");
   };
   const onEditFinish = (values) => {
     const updatedJob = {
@@ -88,10 +87,7 @@ const RightSideBar = () => {
     };
     dispatch(editJobAction({updatedJob,publicProjectId}));
     handleEditJobModalCancel();
-    message.success("Job is successfully edited.");
   };
-
-  
   const handleCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };

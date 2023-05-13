@@ -41,15 +41,14 @@ const JobCard = ({onEditJob }) => {
   };
   const handleDeleteJob = (jobId) => {
     dispatch(deleteJob({jobId,publicProjectId}));
-    message.success("Job is successfully deleted");
   };
   const handleDuplicateJob = async (jobId) => {
     dispatch(duplicateJob({jobId,publicProjectId}));
-    message.success("Job is successfully duplicated");
   };
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text).then(
       function () {
+
       },
       function (err) {
         console.error("Could not copy text: ", err);

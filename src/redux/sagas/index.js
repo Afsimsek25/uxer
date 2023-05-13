@@ -5,6 +5,7 @@ import { watchRegister } from "./registerSaga";
 import { watchAgentRequests } from './agentSaga';
 import jobSaga from './jobSaga';
 import testSaga from './testSaga';
+import folderSaga from './folderSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -13,5 +14,6 @@ export default function* rootSaga() {
     fork(watchAgentRequests),
     fork(jobSaga),
     fork(testSaga),
+    fork(folderSaga),
   ]);
 }

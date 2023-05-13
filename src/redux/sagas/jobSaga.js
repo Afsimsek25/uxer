@@ -17,6 +17,7 @@ import {
   DUPLICATE_JOB_SUCCESS,
   DUPLICATE_JOB_FAILED,
 } from "../actions/jobActions";
+import { message } from "antd";
 
 const usr = JSON.parse(localStorage.getItem("token"));
 const apiUrl = "https://gateway-test.u-xer.com/api/Job";
@@ -58,6 +59,7 @@ function* deleteJobSaga(action) {
     // After successful deletion, dispatch a success action
     yield put({ type: `${DELETE_JOB_SUCCESS}`, payload: response.data });
     yield fetchJobsSaga(action.payload.publicProjectId);
+    message.success("Job is successfully deleted");
   } catch (error) {
     yield put({ type: `${DELETE_JOB_FAILED}`, message: error.message });
   }
@@ -77,6 +79,7 @@ function* duplicateJobSaga(action) {
     );
     yield put({ type: `${DUPLICATE_JOB_SUCCESS}` });
     yield fetchJobsSaga(action.payload.publicProjectId);
+    message.success("Job is successfully duplicated");
   } catch (error) {
     yield put({ type: `${DUPLICATE_JOB_FAILED}`, message: error.message });
     console.error("Error duplicating job:", error);
@@ -102,6 +105,7 @@ function* addJobSaga(action) {
     );
     yield put({ type: ADD_JOB_SUCCESS, payload: response.data });
     yield fetchJobsSaga(action.payload.projectId);
+    message.success("Job is successfully added.");
   } catch (error) {
     yield put({ type: ADD_JOB_FAILED, message: error.message });
     console.error("Error creating new job:", error);
@@ -127,6 +131,7 @@ function* editJobSaga(action) {
     );
     yield put({ type: EDIT_JOB_SUCCESS, payload: response.data });
     yield fetchJobsSaga(action.payload.publicProjectId);
+    message.success("Job is successfully edited.");
   } catch (error) {
     yield put({ type: EDIT_JOB_FAILED, message: error.message });
     console.error("Error editing job:", error);
