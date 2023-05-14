@@ -17,6 +17,7 @@ import {
   DUPLICATE_TEST_FAILED,
 } from "../actions/testActions";
 import axios from "axios";
+import { message } from "antd";
 
 const usr = JSON.parse(localStorage.getItem("token"));
 const apiUrl = "https://gateway-test.u-xer.com/api/Job";
@@ -41,13 +42,23 @@ const api = {
     }
   },
   addTest: async (testData) => {
-    // Simulating an asynchronous API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const newTest = { id: 3, name: "Test 3" };
-        resolve(newTest);
-      }, 1000);
-    });
+    console.log(testData);
+    try {
+      const response = await axios.post(
+        "https://gateway-test.u-xer.com/api/Test",
+        testData,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
   editTest: async (testId, updatedData) => {
     // Simulating an asynchronous API call
@@ -88,9 +99,10 @@ function* listTestSaga(action) {
 
 function* addTestSaga(action) {
   try {
-    // Call the API to add a new test
     const newTest = yield api.addTest(action.payload);
     yield put({ type: ADD_TEST_SUCCESS, payload: newTest });
+    message.success("Test added successfully");
+    yield put({ type: LIST_TEST, payload: { folderId: action.payload.folderId } });
   } catch (error) {
     yield put({ type: ADD_TEST_FAILED, payload: error.message });
   }

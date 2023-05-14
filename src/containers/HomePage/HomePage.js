@@ -13,7 +13,7 @@ const { Content } = Layout;
 const HomePage = () => {
   return (
     <Layout>
-      <HeaderComponent /> 
+     
       <Layout>
         <Sider>
           <LeftSideBar />
