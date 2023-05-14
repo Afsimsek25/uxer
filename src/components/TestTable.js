@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { Divider, Radio, Table } from "antd";
+import { Divider, Radio, Table,Menu,Popover } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { listTest } from "../redux/actions/testActions";
+import { MoreOutlined } from "@ant-design/icons";
 
 const columns = [
   {
@@ -11,15 +12,52 @@ const columns = [
     render: (text) => <a>{text}</a>,
   },
   {
-    title: "Age",
-    dataIndex: "age",
+    title: "Application/File Name",
+    dataIndex: "application_file_name",
   },
   {
-    title: "Address",
-    dataIndex: "address",
+    title: "Modified",
+    dataIndex: "modified",
+  },
+  {
+    title: '',
+    key: 'more',
+    render: (text, record) => {
+      const content = (
+        <Menu>
+          {testMoreOptions.map((option, index) => (
+            <Menu.Item key={index}>{option}</Menu.Item>
+          ))}
+        </Menu>
+      );
+
+      return (
+        <Popover content={content} trigger="click">
+          <MoreOutlined />
+        </Popover>
+      );
+    },
   },
 ];
+const testMoreOptions = [
+  "Copy to project",
+  "Move to Folder",
+  "Share Test",
+  "Get Direct Link",
+  "Change Input Parameter",
+  "Duplicate",
+  "Copy ID",
+  "Save as File",
+  "CSV Parameters Template",
+  "Generate Code",
+  "Manuel Test",
+  "Test Document",
+  "Show History",
+];
 
+const handleTestMoreOptions = (record) => {
+  console.log('hi');
+};
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {},
   getCheckboxProps: (record) => ({

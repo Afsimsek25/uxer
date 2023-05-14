@@ -1,6 +1,18 @@
 // src/components/HeaderComponent.tsx
 
-import { Layout, Row, Col, Button, Space, Dropdown, Menu } from "antd";
+import {
+  Layout,
+  Row,
+  Col,
+  Button,
+  Space,
+  Dropdown,
+  Menu,
+  Modal,
+  Form,
+  Input,
+  message,
+} from "antd";
 import {
   UserOutlined,
   DownOutlined,
@@ -12,24 +24,35 @@ import {
 import { useAuth } from "../provider/AuthProvider";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { routes } from "../routesPath";
+import { useSelector,useDispatch } from "react-redux";
 
 const { Header } = Layout;
 
 const HeaderComponent = () => {
-  
+  const dispatch = useDispatch();
+  const selectedFolderId = useSelector((state) => state.folder.selectedFolderId);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm();
   const { logout } = useAuth();
   const logoutHandler = () => {
     logout();
   };
 
- 
+
+  useEffect(() => {
+    if (selectedFolderId){
+      console.log(selectedFolderId);
+    } 
+  }, [selectedFolderId]);
+
+
   const userMenu = (
     <Menu>
       <Menu.Item key="settings" icon={<SettingOutlined />}>
-      <NavLink to={routes.settings.path}>{routes.settings.title}</NavLink>
+        <NavLink to={routes.settings.path}>{routes.settings.title}</NavLink>
       </Menu.Item>
       <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={logoutHandler}>
         Logout
@@ -44,15 +67,38 @@ const HeaderComponent = () => {
     </Menu>
   );
 
-  // navbarda username göstermek için
-  const [firstName, setFirstName] = useState('')
-  useEffect(() => {
-    const token = JSON.parse(localStorage.getItem('token'));
-    if (token) {
-        setFirstName(token.token.username)
+  const handleNewTest = () => {
+    if (selectedFolderId) {
+      console.log(selectedFolderId);
+      setIsModalVisible(true);
+    }else{
+      message.error("Please select a folder");
     }
-    else {
-        setFirstName("User");
+  };
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        dispatch({type:"ADD_TEST",payload:{...values,script:"",folderId:selectedFolderId}});
+        form.resetFields();
+        setIsModalVisible(false);
+      })
+      .catch((info) => {
+        console.log("Validation Failed:", info);
+      });
+  };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // navbarda username göstermek için
+  const [firstName, setFirstName] = useState("");
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token) {
+      setFirstName(token.token.username);
+    } else {
+      setFirstName("User");
     }
   }, []);
 
@@ -61,7 +107,11 @@ const HeaderComponent = () => {
       <Row align="middle" justify="space-between">
         <Col>
           <Link to={routes.homepage.path}>
-            <img src={logo} alt="u-xer" style={{ height: "40px", marginRight: "16px" }} />
+            <img
+              src={logo}
+              alt="u-xer"
+              style={{ height: "40px", marginRight: "16px" }}
+            />
           </Link>
           <Space>
             <Button type="text" style={{ color: "white" }}>
@@ -88,7 +138,35 @@ const HeaderComponent = () => {
             </Button>
           </Space>
           <Space>
-            <Button type="primary">New Test</Button>
+            <div>
+              <Button type="primary" onClick={handleNewTest}>
+                New Test
+              </Button>
+              <Modal
+                title="New Test"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+              >
+                <Form form={form} layout="vertical" name="form_in_modal">
+                  <Form.Item
+                    name="name"
+                    label="Name"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input the name of the test!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="description" label="Description">
+                    <Input type="textarea" />
+                  </Form.Item>
+                </Form>
+              </Modal>
+            </div>
             <Dropdown overlay={fileMenu} trigger={["click"]}>
               <Button type="primary" onClick={(e) => e.preventDefault()}>
                 Open File <CaretDownOutlined />
