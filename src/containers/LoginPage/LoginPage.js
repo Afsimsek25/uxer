@@ -30,7 +30,8 @@ const LoginPage=() => {
   useEffect(() => {
     if (loginState.data) {
       login(loginState.data)
-      navigate("/homepage"); 
+      navigate(routes.homepage.path); 
+
     }
     if (loginState.error) {
       setLoginError(true);

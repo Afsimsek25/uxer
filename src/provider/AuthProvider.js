@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("data");
     sessionStorage.removeItem("data");
     loginState.data = null;
-    navigate(routes.login.path,);
+    navigate(routes.login.path);
   };
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout }}>

@@ -28,10 +28,6 @@ export const routes ={
         path:"/accounts",
         title:"Accounts",
     },
-    agents:{
-        path:"/agents",
-        title:"Agents",
-    },
     profile:{
         path:"/profile",
         title:"Profile",

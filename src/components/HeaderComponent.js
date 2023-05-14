@@ -51,6 +51,9 @@ const HeaderComponent = () => {
     if (token) {
         setFirstName(token.token.username)
     }
+    else {
+        setFirstName("User");
+    }
   }, []);
 
   return (
