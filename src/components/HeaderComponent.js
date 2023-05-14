@@ -80,7 +80,7 @@ const HeaderComponent = () => {
             </Button>
             <Button type="text" style={{ color: "white" }}>
               <Link to={routes.agents.path} style={{ color: "inherit" }}>
-                {routes.agents.name}
+                {routes.agents.title}
               </Link>
             </Button>
             <Button type="text" style={{ color: "white" }}>

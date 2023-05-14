@@ -6,6 +6,7 @@ import LeftSideBar from "../../components/LeftSideBar";
 import Sider from "antd/es/layout/Sider";
 import HeaderComponent from "../../components/HeaderComponent";
 import RightSidebar from "../../components/RightSideBar"
+import TestTable from "../../components/TestTable";
 
 const { Content } = Layout;
 
@@ -17,8 +18,8 @@ const HomePage = () => {
         <Sider>
           <LeftSideBar />
         </Sider>
-        <Content>
-          {/* İçerik alanı */}
+        <Content style={{ padding: '0 50px', margin: '24px 160px 0', overflow: 'initial', width: '0px', height: '0px' }}>
+          <TestTable />
         </Content>
         <Sider>
           <RightSidebar />

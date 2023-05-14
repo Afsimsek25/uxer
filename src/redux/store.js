@@ -3,9 +3,6 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import rootReducer from './reducers';
-import { watchLogin } from './sagas/loginSaga';
-import { watchRegister } from './sagas/registerSaga';
-import { watchAgentRequests } from './sagas/agentSaga';
 import rootSaga from './sagas'; // Import rootSaga
 
 // Saga Middleware
@@ -18,4 +15,4 @@ export const store = createStore(
 );
 
 // Run Sagas
-sagaMiddleware.run(rootSaga); // Run rootSaga
+sagaMiddleware.run(rootSaga);

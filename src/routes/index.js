@@ -5,7 +5,7 @@ import HomePage from "../containers/HomePage/HomePage";
 import Authentication from "./Authentication";
 import ForgotPassword from "../containers/ForgotPassword/ForgotPassword";
 import Accounts from "../containers/Accounts/Accounts";
-import AgentsPage from "../containers/Agents/Agents"
+import AgentsPage from "../containers/Agents/Agents";
 import Register from "../containers/Register/Register";
 import Settings from "../containers/settings/Settings";
 import { routes } from "../routesPath";
@@ -33,6 +33,7 @@ const RoutePath = () => {
         <Route path={routes.settings.path} element={<Authentication><Settings /></Authentication>} />
       </Routes>
     </>
+
   );
 };
 export default RoutePath;

@@ -6,6 +6,8 @@ import projectReducer from "./projectReducer";
 import { agentReducer } from './agentReducer';
 import jobReducer from './JobReducer'; // Import JobReducer
 import userReducer from "./userReducer";
+import testReducer from './testReducer';
+import folderReducer from './folderReducer';
 
 const rootReducer = combineReducers({
   login: loginReducer,
@@ -14,6 +16,8 @@ const rootReducer = combineReducers({
   agent: agentReducer,
   job: jobReducer, // Add JobReducer
   user: userReducer,
+  test: testReducer,
+  folder: folderReducer,
 });
 
 export default rootReducer;
