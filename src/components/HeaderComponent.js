@@ -41,14 +41,6 @@ const HeaderComponent = () => {
     logout();
   };
 
-
-  useEffect(() => {
-    if (selectedFolderId){
-      console.log(selectedFolderId);
-    } 
-  }, [selectedFolderId]);
-
-
   const userMenu = (
     <Menu>
       <Menu.Item key="settings" icon={<SettingOutlined />}>

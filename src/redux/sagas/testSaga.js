@@ -42,7 +42,6 @@ const api = {
     }
   },
   addTest: async (testData) => {
-    console.log(testData);
     try {
       const response = await axios.post(
         "https://gateway-test.u-xer.com/api/Test",
