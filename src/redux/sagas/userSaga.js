@@ -34,7 +34,6 @@ const api = {
 function* getUserSaga(action) {
     try {
         const user = yield call(api.getUser);
-        console.log("user", user);
         yield put({ type: GET_USER_SUCCESS, payload: user });
     } catch (error) {
         yield put({ type: GET_USER_FAILURE, error: error.message });

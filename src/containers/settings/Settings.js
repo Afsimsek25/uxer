@@ -11,15 +11,16 @@ const { Sider } = Layout;
 
 const App = () => {
     const dispatchEvent = useDispatch();
-    const user = useSelector((state) => state.user);
-    const fncGetMyProfile = () => {
+    const user = useSelector((state) => state.user.user);
+    
+
+    const handleGetUser = () => {
         dispatchEvent(getUserRequest());
-    }
+    };
 
     return (
         <>
             <Layout>
-                <HeaderComponent />
                 <Layout>
                     <Sider
                         style={{
@@ -32,14 +33,13 @@ const App = () => {
                     >
                     </Sider>
                     <Menu
-                        onClick={(e) => console.log(e)}
                         style={{ width: 350, height: "calc(100vh - 50px)" }}
                         defaultSelectedKeys={["1"]}
                     >
                         <Menu.Item
                             key="elements"
                             icon={<CgProfile />}
-                            onClick={fncGetMyProfile()}
+                            onClick={handleGetUser}
                         >
                             My Profile
                         </Menu.Item>

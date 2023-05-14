@@ -3,7 +3,7 @@ import { Divider, Radio, Table,Menu,Popover } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { listTest } from "../redux/actions/testActions";
-import { MoreOutlined } from "@ant-design/icons";
+import { MoreOutlined,PlayCircleOutlined,EditOutlined,DeleteOutlined } from "@ant-design/icons";
 
 const columns = [
   {
@@ -32,9 +32,14 @@ const columns = [
       );
 
       return (
-        <Popover content={content} trigger="click">
-          <MoreOutlined />
-        </Popover>
+        <div>
+          <PlayCircleOutlined style={{ marginRight: 8 }} />
+          <EditOutlined style={{ marginRight: 8 }} />
+          <DeleteOutlined style={{ marginRight: 8 }} />
+          <Popover content={content} trigger="click">
+            <MoreOutlined />
+          </Popover>
+        </div>
       );
     },
   },
