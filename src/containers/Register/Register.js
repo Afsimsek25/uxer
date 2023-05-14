@@ -53,7 +53,7 @@ const Register = () => {
         description:
           "Kayıt işlemi başarıyla tamamlandı, giriş yapabilirsiniz.",
       });
-      navigate({routes:routes.login.path});
+      navigate(routes.login.path);
     }
     if (registerState.error) {
       setRegisterError(true);
