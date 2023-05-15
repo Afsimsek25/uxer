@@ -7,10 +7,10 @@ import ForgotPassword from "../containers/ForgotPassword/ForgotPassword";
 import Accounts from "../containers/Accounts/Accounts";
 import AgentsPage from "../containers/Agents/Agents";
 import Register from "../containers/Register/Register";
-import Settings from "../containers/settings/Settings";
 import { routes } from "../routesPath";
 import HeaderComponent from "../components/HeaderComponent";
 import Page404 from '../components/404'
+import MyProfile from "../containers/settings/MyProfile";
 
 const RoutePath = () => {
   const location = useLocation();
@@ -30,7 +30,7 @@ const RoutePath = () => {
         <Route path={routes.homepage.path} element={<Authentication><HomePage /></Authentication>} />
         <Route path={routes.accounts.path} element={<Authentication><Accounts /></Authentication>} />
         <Route path={routes.agents.path} element={<Authentication><AgentsPage /></Authentication>} />
-        <Route path={routes.settings.path} element={<Authentication><Settings /></Authentication>} />
+        <Route path={routes.profile.path} element={<Authentication><MyProfile /></Authentication>} />
       </Routes>
     </>
 
