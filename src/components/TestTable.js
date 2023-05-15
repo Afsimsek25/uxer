@@ -1,11 +1,58 @@
 import React, { useEffect } from "react";
-import { Divider, Radio, Table,Menu,Popover } from "antd";
+import { Divider, Radio, Table,Menu,Popover, Modal, Form, Input } from "antd";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { listTest } from "../redux/actions/testActions";
+import { listTest,deleteTest, duplicateTest,editTest } from "../redux/actions/testActions";
 import { MoreOutlined,PlayCircleOutlined,EditOutlined,DeleteOutlined } from "@ant-design/icons";
 
-const columns = [
+
+const App = () => {
+  const selectedFolderId = useSelector(
+    (state) => state.folder.selectedFolderId
+  );
+  const stateTestData = useSelector((state) => state.test.tests);
+  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingTest, setEditingTest] = useState(null);
+  const [form] = Form.useForm();
+
+  const handleOk = () => {
+    form.validateFields().then(values => {
+      dispatch(editTest({id:editingTest,...values}));
+      console.log('Success:', stateTestData);
+      setIsModalVisible(false);
+      form.resetFields();
+    }).catch(errorInfo => {
+      console.log('Validation failed:', errorInfo);
+    });
+  };
+  
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    form.resetFields();
+  };
+  const handleTestDelete = (testId) => {
+    dispatch(deleteTest(testId));
+  };
+  const handleTestEdit = (testData) => {
+    setEditingTest(testData.id);
+    form.setFieldsValue({
+      name: testData.name,
+      description: testData.description,
+    });
+    setIsModalVisible(true);
+  };
+
+  const handleMenuOptionClick = (option, record) => {
+    if (option === 'Duplicate') {
+      dispatch(duplicateTest(record.id));
+      console.log('Duplicate clicked for record:', record);
+    }
+    // Diğer opsiyonlar için de benzer işlemler yapılabilir.
+  };
+
+  const columns = [
   {
     title: "Name",
     dataIndex: "name",
@@ -26,16 +73,21 @@ const columns = [
       const content = (
         <Menu>
           {testMoreOptions.map((option, index) => (
-            <Menu.Item key={index}>{option}</Menu.Item>
+            <Menu.Item 
+              key={index} 
+              onClick={() => handleMenuOptionClick(option, record)}
+            >
+              {option}
+            </Menu.Item>
           ))}
         </Menu>
       );
-
+  
       return (
         <div>
           <PlayCircleOutlined style={{ marginRight: 8 }} />
-          <EditOutlined style={{ marginRight: 8 }} />
-          <DeleteOutlined style={{ marginRight: 8 }} />
+          <EditOutlined style={{ marginRight: 8 }} onClick={() => handleTestEdit(record)} />
+          <DeleteOutlined style={{ marginRight: 8 }} onClick={() => handleTestDelete(record.id)} />
           <Popover content={content} trigger="click">
             <MoreOutlined />
           </Popover>
@@ -43,6 +95,7 @@ const columns = [
       );
     },
   },
+  
 ];
 const testMoreOptions = [
   "Copy to project",
@@ -59,10 +112,6 @@ const testMoreOptions = [
   "Test Document",
   "Show History",
 ];
-
-const handleTestMoreOptions = (record) => {
-  console.log('hi');
-};
 const rowSelection = {
   onChange: (selectedRowKeys, selectedRows) => {},
   getCheckboxProps: (record) => ({
@@ -70,16 +119,6 @@ const rowSelection = {
     name: record.name,
   }),
 };
-const App = () => {
-  const selectedFolderId = useSelector(
-    (state) => state.folder.selectedFolderId
-  );
-  const state = useSelector((state) => state);
-  const stateTestData = useSelector((state) => state.test.tests);
-  const [data, setData] = useState([]);
-  const dispatch = useDispatch();
-
-
   useEffect(() => {
     if (selectedFolderId){
       const reqDetails = {
@@ -109,6 +148,30 @@ const App = () => {
         columns={columns}
         dataSource={data}
       />
+      <Modal
+        title="Edit Test"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form form={form} layout="vertical" name="form_in_modal">
+          <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                message: "Please input the name of the test!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input type="textarea" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

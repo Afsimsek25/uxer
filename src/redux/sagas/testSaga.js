@@ -60,30 +60,57 @@ const api = {
     }
   },
   editTest: async (testId, updatedData) => {
-    // Simulating an asynchronous API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const updatedTest = { id: testId, ...updatedData };
-        resolve(updatedTest);
-      }, 1000);
-    });
+    console.log(updatedData);
+    try {
+      const response = await axios.put(
+        `https://gateway-test.u-xer.com/api/Test/${testId}`,
+        updatedData,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
   deleteTest: async (testId) => {
-    // Simulating an asynchronous API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(testId);
-      }, 1000);
-    });
+    try {
+      const response = await axios.delete(
+        `https://gateway-test.u-xer.com/api/Test/${testId}`,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
   duplicateTest: async (testId) => {
-    // Simulating an asynchronous API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const duplicatedTest = { id: testId, name: "Duplicated Test" };
-        resolve(duplicatedTest);
-      }, 1000);
-    });
+    console.log(testId);
+    try {
+      const response = await axios.put(
+        `https://gateway-test.u-xer.com/api/Test/${testId}/duplicate`,
+        null,
+        {
+          headers: {
+            Accept: "*/*",
+            Authorization: `Bearer ${usr.token.accessToken}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
 };
 
@@ -101,7 +128,10 @@ function* addTestSaga(action) {
     const newTest = yield api.addTest(action.payload);
     yield put({ type: ADD_TEST_SUCCESS, payload: newTest });
     message.success("Test added successfully");
-    yield put({ type: LIST_TEST, payload: { folderId: action.payload.folderId } });
+    yield put({
+      type: LIST_TEST,
+      payload: { folderId: action.payload.folderId },
+    });
   } catch (error) {
     yield put({ type: ADD_TEST_FAILED, payload: error.message });
   }
@@ -109,13 +139,18 @@ function* addTestSaga(action) {
 
 function* editTestSaga(action) {
   try {
-    const { testId, updatedData } = action.payload;
-    // Call the API to edit the test
-    const updatedTest = yield api.editTest(testId, updatedData);
+    console.log(action.payload);
+    const testId = action.payload.testId.id;
+    const name = action.payload.testId.name;
+    const description = action.payload.testId.description; 
+    
+    const updatedTest = yield api.editTest(testId, {name, description, script:""});
     yield put({
       type: EDIT_TEST_SUCCESS,
       payload: { testId, updatedData: updatedTest },
     });
+    message.success("Test update successfully");
+    yield put({ type: LIST_TEST, payload: { folderId: action.payload.folderId } });
   } catch (error) {
     yield put({ type: EDIT_TEST_FAILED, payload: error.message });
   }
@@ -123,9 +158,13 @@ function* editTestSaga(action) {
 
 function* deleteTestSaga(action) {
   try {
-    // Call the API to delete the test
     yield api.deleteTest(action.payload);
     yield put({ type: DELETE_TEST_SUCCESS, payload: action.payload });
+    message.success("Test deleted successfully");
+    yield put({
+      type: LIST_TEST,
+      payload: { folderId: action.payload.folderId },
+    });
   } catch (error) {
     yield put({ type: DELETE_TEST_FAILED, payload: error.message });
   }
@@ -133,9 +172,13 @@ function* deleteTestSaga(action) {
 
 function* duplicateTestSaga(action) {
   try {
-    // Call the API to duplicate the test
     const duplicatedTest = yield api.duplicateTest(action.payload);
     yield put({ type: DUPLICATE_TEST_SUCCESS, payload: duplicatedTest });
+    message.success("Test duplicated successfully");
+    yield put({
+      type: LIST_TEST,
+      payload: { folderId: action.payload.folderId },
+    });
   } catch (error) {
     yield put({ type: DUPLICATE_TEST_FAILED, payload: error.message });
   }
