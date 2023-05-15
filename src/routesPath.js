@@ -11,6 +11,10 @@ export const routes ={
         path:"/forgot-password",
         title:"Forgot Password",
     },
+    changePassword:{
+        path:"/change-password",
+        title:"Change Password",
+    },
     homepage:{
         path:"/homepage",
         title:"Homepage",
@@ -32,4 +36,9 @@ export const routes ={
         path:"/profile",
         title:"Profile",
     },
+    users:{
+        path:"/users",
+        title:"Users",
+    },
+
 }
