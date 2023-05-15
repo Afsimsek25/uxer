@@ -11,11 +11,11 @@ import axios from 'axios';
 
 const api = {
 
-    getUser:async () => {
+    getUser: async () => {
         try {
             const usr = JSON.parse(localStorage.getItem("token"));
 
-            const response = await axios.get('https://gateway-test.u-xer.com/api/User/me', {
+            const response = await axios.get('https://gateway-test.u-xer.com/api/Me', {
                 headers: {
                     'accept': '*/*',
                     'Authorization': `Bearer ${usr.token.accessToken}`,

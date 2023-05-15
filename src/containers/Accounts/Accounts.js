@@ -11,7 +11,6 @@ const HomePage = () => {
 
   return (
   <Layout>
-    <HeaderComponent />
     <div style={{ height: "32px" }}></div>
     <Layout>
       <Layout>
